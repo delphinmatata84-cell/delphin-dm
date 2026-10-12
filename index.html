@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delphin DM - Humains & IA</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07111f;color:white;font-family:Arial,sans-serif}
+header{padding:20px;background:#0c1d32;border-bottom:2px solid #ffcf33}
+.logo{font-size:28px;font-weight:bold;color:#ffcf33}
+.logo span{color:#48a7ff}
+header p{margin:8px 0 0;color:#d8e5f5}
+main{max-width:700px;margin:25px auto;padding:16px}
+.card{background:#10243b;border:1px solid #294766;border-radius:18px;padding:20px;margin-bottom:18px}
+h2{margin-top:0;color:#ffcf33}
+input,textarea{width:100%;padding:14px;margin:8px 0;background:#07111f;color:white;border:1px solid #47617d;border-radius:10px;font-size:16px}
+button{padding:13px 18px;border:0;border-radius:10px;background:#ffcf33;color:#101827;font-weight:bold;font-size:15px;cursor:pointer}
+button:hover{opacity:.85}
+.secondary{background:#2588e8;color:white}
+#messages{height:260px;overflow-y:auto;background:#07111f;padding:12px;border-radius:12px;margin-bottom:12px}
+.msg{padding:10px 12px;margin:8px 0;border-radius:12px;line-height:1.4}
+.user{background:#174f80;text-align:right}
+.ai{background:#1b354d}
+.small{font-size:13px;color:#b8c8dc;line-height:1.5}
+footer{text-align:center;padding:20px;color:#9fb2c8;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Delphin <span>DM</span> 🌍</div>
+  <p>Un espace pour échanger entre humains et intelligence artificielle.</p>
+</header>
+<main>
+  <section class="card">
+    <h2>Bienvenue sur Delphin DM 👋</h2>
+    <p>Discute, pose tes questions et découvre les possibilités de l'intelligence artificielle.</p>
+    <input id="nom" placeholder="Ton prénom (facultatif)">
+    <button onclick="bienvenue()">Entrer dans la discussion</button>
+    <p id="salut" class="small"></p>
+  </section>
+
+  <section class="card">
+    <h2>💬 Discussion avec l'IA</h2>
+    <div id="messages">
+      <div class="msg ai">🤖 Bonjour ! Bienvenue sur Delphin DM. Comment puis-je t'aider aujourd'hui ?</div>
+    </div>
+    <textarea id="question" rows="3" placeholder="Écris ton message ici..."></textarea>
+    <button onclick="envoyer()">Envoyer</button>
+    <button class="secondary" onclick="effacer()">Effacer la discussion</button>
+    <p class="small">Version de démonstration : les réponses sont simulées. Une véritable IA devra être connectée plus tard.</p>
+  </section>
+
+  <section class="card">
+    <h2>🌐 Notre vision</h2>
+    <p>Delphin DM veut rapprocher les humains et l'intelligence artificielle grâce à un espace simple et accessible.</p>
+    <p class="small">Les comptes sécurisés, les conversations en ligne et les appels audio/vidéo seront ajoutés dans de futures étapes.</p>
+  </section>
+</main>
+<footer>© 2026 Delphin DM · Dieu pourvoira 🙏</footer>
+<script>
+function bienvenue(){
+  const n=document.getElementById('nom').value.trim();
+  document.getElementById('salut').textContent=n?'Bienvenue, '+n+' !':'Bienvenue dans Delphin DM !';
+}
+function envoyer(){
+  const q=document.getElementById('question');
+  const t=q.value.trim();
+  if(!t)return;
+  const zone=document.getElementById('messages');
+  const u=document.createElement('div');
+  u.className='msg user';
+  u.textContent='👤 '+t;
+  zone.appendChild(u);
+  const a=document.createElement('div');
+  a.className='msg ai';
+  a.textContent='🤖 Merci pour ton message ! Ceci est une version de démonstration. Une véritable IA sera connectée dans une prochaine étape.';
+  zone.appendChild(a);
+  q.value='';
+  zone.scrollTop=zone.scrollHeight;
+}
+function effacer(){
+  document.getElementById('messages').innerHTML='<div class="msg ai">🤖 Bonjour ! Comment puis-je t’aider ?</div>';
+}
+</script>
+</body>
+</html>
