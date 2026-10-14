@@ -57,6 +57,36 @@ function clearHistory(){document.getElementById('messages').innerHTML='<div clas
 function effacer(){clearHistory()}
 function bienvenue(){const n=document.getElementById('nom').value.trim();document.getElementById('salut').textContent=n?'Bienvenue, '+n+' !':'Bienvenue dans Delphin DM !';if(n){document.getElementById('displayName').value=n;savePreference('name',n)}}
 function showAbout(){alert('Delphin DM 🌍\nUn espace pour échanger entre humains et intelligence artificielle.\nVersion de démonstration 1.1.')}
-function envoyer(){const q=document.getElementById('question'),t=q.value.trim();if(!t)return;const zone=document.getElementById('messages'),u=document.createElement('div');u.className='msg user';u.textContent='👤 '+t;zone.appendChild(u);const a=document.createElement('div');a.className='msg ai';a.textContent='🤖 Merci pour ton message ! Ceci est encore une version de démonstration. Une véritable IA sera connectée dans une prochaine étape.';zone.appendChild(a);q.value='';zone.scrollTop=zone.scrollHeight;saveHistory()}
+function envoyer(){const q=document.getElementById('question'),t=q.value.trim();if(!t)return;const zone=document.getElementById('messages'),u=document.createElement('div');u.className='msg user';u.textContent='👤 '+t;zone.appendChild(u);const a=document.createElement('div');a.className='msg ai';a.textContent='🤖 Merci pour ton message ! Ceci est encore une version de démonstration. Une véritable IA sera connectée dans une prochaine étape.';zone.appendChild(a);q.value='';zone.scrollTop=zone.scrollHeight;saveHistory()}  async function envoyer() {
+    const input = document.getElementById('question');
+    const promptText = input ? input.value.trim() : '';
+    if (!promptText) return;
+
+    const messagesDiv = document.getElementById('messages');
+    if (messagesDiv) {
+      messagesDiv.innerHTML += `<div class="message" style="margin-top:10px;"><strong>Moi :</strong> ${promptText}</div>`;
+    }
+    if (input) input.value = '';
+
+    try {
+      const response = await fetch("https://hidden-term-b5fa.delphinmatata84.workers.dev", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: promptText })
+      });
+
+      const data = await response.json();
+      const reponseIA = data.response || "Réponse reçue.";
+
+      if (messagesDiv) {
+        messagesDiv.innerHTML += `<div class="message" style="background:#1e3a8a; margin-top:10px;"><strong>Delphin DM AI :</strong> ${reponseIA}</div>`;
+      }
+    } catch (error) {
+      if (messagesDiv) {
+        messagesDiv.innerHTML += `<div class="message" style="background:#7f1d1d; margin-top:10px;"><strong>Erreur :</strong> Impossible de joindre l'IA.</div>`;
+      }
+    }
+  }
+
 document.addEventListener('DOMContentLoaded',()=>{const p=readPrefs();if(p.theme){document.getElementById('themeChoice').value=p.theme;document.body.classList.toggle('light',p.theme==='light')}if(p.fontSize){document.getElementById('fontChoice').value=p.fontSize;document.body.style.fontSize=p.fontSize+'px'}if(p.language)document.getElementById('languageChoice').value=p.language;if(p.style)document.getElementById('styleChoice').value=p.style;if(p.name){document.getElementById('displayName').value=p.name;document.getElementById('nom').value=p.name}historyEnabled=!!p.historyEnabled;document.getElementById('historyChoice').checked=historyEnabled;if(historyEnabled){const h=localStorage.getItem(HISTORY);if(h)document.getElementById('messages').innerHTML=h}});
 </script></body></html>
