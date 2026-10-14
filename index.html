@@ -1,86 +1,62 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Delphin DM</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 15px; }
-    .card { background: #1e293b; padding: 20px; border-radius: 12px; max-width: 600px; margin: 15px auto; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-    h1, h2 { color: #f59e0b; margin-top: 0; }
-    textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; resize: vertical; box-sizing: border-box; font-size: 16px; }
-    button { background: #f59e0b; color: #0f172a; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; font-size: 15px; }
-    .btn-secondary { background: #0284c7; color: white; margin-left: 8px; }
-    .message { margin-top: 12px; padding: 12px; border-radius: 8px; background: #1e3a8a; font-size: 15px; line-height: 1.4; }
-    .user-msg { background: #334155; }
-  </style>
-</head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f"><title>Delphin DM - Humains & IA</title>
+<style>
+:root{--bg:#07111f;--panel:#10243b;--panel2:#0c1d32;--text:#fff;--muted:#b8c8dc;--border:#294766;--gold:#ffcf33;--blue:#2588e8;--input:#07111f}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;font-size:16px}
+body.light{--bg:#f2f6fb;--panel:#fff;--panel2:#e7eef7;--text:#142236;--muted:#52647a;--border:#c6d4e4;--input:#fff}
+header{padding:18px 16px;background:var(--panel2);border-bottom:2px solid var(--gold)}
+.headerrow{max-width:760px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{font-size:27px;font-weight:bold;color:var(--gold)}.logo span{color:#48a7ff}header p{margin:8px 0 0;color:var(--muted)}
+main{max-width:760px;margin:22px auto;padding:0 14px}.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:16px}
+h2{margin-top:0;color:var(--gold);font-size:1.25em}input,textarea,select{width:100%;padding:13px;margin:8px 0;background:var(--input);color:var(--text);border:1px solid #47617d;border-radius:10px;font-size:1em}
+button{padding:12px 15px;border:0;border-radius:10px;background:var(--gold);color:#101827;font-weight:bold;font-size:15px;cursor:pointer;margin:4px 3px 4px 0}
+button:hover{opacity:.88}.secondary{background:var(--blue);color:white}.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+#messages{height:260px;overflow-y:auto;background:var(--input);padding:10px;border:1px solid var(--border);border-radius:12px;margin-bottom:12px}
+.msg{padding:10px 12px;margin:8px 0;border-radius:12px;line-height:1.45;overflow-wrap:anywhere}.user{background:#174f80;color:#fff;text-align:right}.ai{background:var(--panel2)}
+.small{font-size:.82em;color:var(--muted);line-height:1.5}footer{text-align:center;padding:20px;color:var(--muted);font-size:13px}
+#settingsPanel{display:none}#settingsPanel.open{display:block}.settingrow{padding:12px 0;border-bottom:1px solid var(--border)}.settingrow:last-child{border-bottom:0}
+.settingrow label{display:block;font-weight:bold;margin-bottom:5px}.switchline{display:flex;align-items:center;gap:10px}.switchline input{width:auto;margin:0}
+.topbuttons{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:520px){.headerrow{align-items:flex-start;flex-direction:column}.logo{font-size:24px}}
+</style></head>
 <body>
-
-  <div class="card">
-    <h1>Bienvenue sur Delphin DM 👋</h1>
-    <p>Discute, pose tes questions et découvre les possibilités de l'intelligence artificielle.</p>
-  </div>
-
-  <div class="card">
-    <h2>💬 Discussion avec l'IA</h2>
-    <div id="messages">
-      <div class="message">🤖 Bonjour ! Bienvenue sur Delphin DM. Comment puis-je t'aider aujourd'hui ?</div>
-    </div>
-    <br>
-    <textarea id="question" rows="3" placeholder="Écris ton message ici..."></textarea>
-    <br>
-    <button onclick="envoyer()">Envoyer</button>
-    <button class="btn-secondary" onclick="effacer()">Effacer la discussion</button>
-  </div>
-
-  <script>
-    function effacer() {
-      document.getElementById('messages').innerHTML = '<div class="message">🤖 Discussion réinitialisée. Pose ta question !</div>';
-    }
-
-    async function envoyer() {
-      const input = document.getElementById('question');
-      const promptText = input ? input.value.trim() : '';
-      if (!promptText) return;
-
-      const messagesDiv = document.getElementById('messages');
-      if (messagesDiv) {
-        messagesDiv.innerHTML += `<div class="message user-msg"><strong>Moi :</strong> ${promptText}</div>`;
-      }
-      if (input) input.value = '';
-
-      try {
-        const response = await fetch("https://hidden-term-b5fa.delphinmatata84.workers.dev", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt: promptText })
-        });
-
-        const data = await response.json();
-        
-        // Détection automatique du bon format de réponse de l'IA
-        let reponseTexte = "";
-        if (typeof data === "string") {
-          reponseTexte = data;
-        } else if (data.response) {
-          reponseTexte = data.response;
-        } else if (data.result && data.result.response) {
-          reponseTexte = data.result.response;
-        } else {
-          reponseTexte = JSON.stringify(data);
-        }
-
-        if (messagesDiv) {
-          messagesDiv.innerHTML += `<div class="message"><strong>Delphin DM AI :</strong> ${reponseTexte}</div>`;
-        }
-      } catch (error) {
-        if (messagesDiv) {
-          messagesDiv.innerHTML += `<div class="message" style="background:#7f1d1d;"><strong>Erreur :</strong> Impossible de joindre l'IA.</div>`;
-        }
-      }
-    }
-  </script>
-
-</body>
-</html>
+<header><div class="headerrow"><div><div class="logo">Delphin <span>DM</span> 🌍</div><p>Un espace pour échanger entre humains et intelligence artificielle.</p></div>
+<div class="topbuttons"><button class="ghost" onclick="toggleSettings()" id="settingsButton" aria-expanded="false">⚙️ Paramètres</button></div></div></header>
+<main>
+<section id="settingsPanel" class="card" aria-label="Paramètres">
+<h2>⚙️ Paramètres de Delphin DM</h2><p class="small">Personnalise ton expérience. Les préférences sont enregistrées sur cet appareil.</p>
+<div class="settingrow"><label for="displayName">Nom affiché (facultatif)</label><input id="displayName" maxlength="40" placeholder="Ton prénom"><button onclick="saveName()">Enregistrer le nom</button></div>
+<div class="settingrow"><label for="themeChoice">Apparence</label><select id="themeChoice" onchange="applyTheme()"><option value="dark">Mode sombre</option><option value="light">Mode clair</option></select></div>
+<div class="settingrow"><label for="fontChoice">Taille du texte</label><select id="fontChoice" onchange="applyFontSize()"><option value="14">Petite</option><option value="16">Normale</option><option value="18">Grande</option><option value="20">Très grande</option></select></div>
+<div class="settingrow"><label for="languageChoice">Langue préférée</label><select id="languageChoice" onchange="savePreference('language',this.value)"><option value="fr">Français</option><option value="en">English</option><option value="ln">Lingala</option><option value="sw">Kiswahili</option></select><p class="small">La préférence est enregistrée. La traduction complète sera ajoutée séparément.</p></div>
+<div class="settingrow"><label for="styleChoice">Style de réponse de l'IA</label><select id="styleChoice" onchange="savePreference('style',this.value)"><option value="balanced">Équilibré</option><option value="short">Court et simple</option><option value="detailed">Détaillé et pédagogique</option><option value="professional">Professionnel</option><option value="encouraging">Encourageant</option></select><p class="small">Cette préférence sera utilisée lorsque le service d'IA réel sera connecté.</p></div>
+<div class="settingrow"><label>Historique des conversations</label><div class="switchline"><input type="checkbox" id="historyChoice" onchange="setHistory(this.checked)"><span>Enregistrer les conversations sur cet appareil</span></div><button class="secondary" onclick="restoreHistory()">Restaurer l'historique</button><button onclick="clearHistory()">Effacer la conversation</button></div>
+<div class="settingrow"><label>Confidentialité et informations</label><p class="small">Cette démonstration enregistre les préférences et, si activé, l'historique dans le navigateur de cet appareil. Les données ne sont pas synchronisées entre appareils. N'y saisis pas d'informations secrètes.</p><button class="ghost" onclick="showAbout()">À propos de Delphin DM</button></div>
+<div class="settingrow"><label>Aide</label><p class="small">Les réponses du chat sont encore simulées. Une connexion sécurisée à un service d'IA est nécessaire pour obtenir de vraies réponses.</p></div>
+<button onclick="toggleSettings()">Fermer les paramètres</button></section>
+<section class="card"><h2>Bienvenue sur Delphin DM 👋</h2><p>Discute, pose tes questions et découvre les possibilités de l'intelligence artificielle.</p><input id="nom" placeholder="Ton prénom (facultatif)"><button onclick="bienvenue()">Entrer dans la discussion</button><p id="salut" class="small"></p></section>
+<section class="card"><h2>💬 Discussion avec l'IA</h2><div id="messages" aria-live="polite"><div class="msg ai">🤖 Bonjour ! Bienvenue sur Delphin DM. Comment puis-je t'aider aujourd'hui ?</div></div>
+<textarea id="question" rows="3" placeholder="Écris ton message ici..."></textarea><button onclick="envoyer()">Envoyer</button><button class="secondary" onclick="effacer()">Effacer la discussion</button><p class="small">Version de démonstration : les réponses sont simulées. Une véritable IA devra être connectée plus tard.</p></section>
+<section class="card"><h2>🌐 Notre vision</h2><p>Delphin DM veut rapprocher les humains et l'intelligence artificielle grâce à un espace simple et accessible.</p><p class="small">Les comptes sécurisés, les conversations en ligne et les appels audio/vidéo seront ajoutés dans de futures étapes.</p></section>
+</main><footer>© 2026 Delphin DM · Dieu pourvoira 🙏</footer>
+<script>
+const PREFS='delphinDM_preferences_v1',HISTORY='delphinDM_history_v1';let historyEnabled=false;
+function readPrefs(){try{return JSON.parse(localStorage.getItem(PREFS)||'{}')}catch(e){return {}}}
+function savePreference(k,v){const p=readPrefs();p[k]=v;localStorage.setItem(PREFS,JSON.stringify(p))}
+function toggleSettings(){const panel=document.getElementById('settingsPanel');panel.classList.toggle('open');document.getElementById('settingsButton').setAttribute('aria-expanded',panel.classList.contains('open')?'true':'false');if(panel.classList.contains('open'))panel.scrollIntoView({behavior:'smooth',block:'start'})}
+function applyTheme(){const v=document.getElementById('themeChoice').value;document.body.classList.toggle('light',v==='light');savePreference('theme',v)}
+function applyFontSize(){const v=document.getElementById('fontChoice').value;document.body.style.fontSize=v+'px';savePreference('fontSize',v)}
+function saveName(){const v=document.getElementById('displayName').value.trim();document.getElementById('nom').value=v;savePreference('name',v);document.getElementById('salut').textContent=v?'Nom enregistré : '+v+'.':'Nom effacé.'}
+function setHistory(on){historyEnabled=on;savePreference('historyEnabled',on);if(on)saveHistory();else localStorage.removeItem(HISTORY)}
+function saveHistory(){if(historyEnabled)localStorage.setItem(HISTORY,document.getElementById('messages').innerHTML)}
+function restoreHistory(){const h=localStorage.getItem(HISTORY);if(h){document.getElementById('messages').innerHTML=h;document.getElementById('messages').scrollTop=document.getElementById('messages').scrollHeight;alert('Historique restauré.')}else alert('Aucun historique enregistré sur cet appareil.')}
+function clearHistory(){document.getElementById('messages').innerHTML='<div class="msg ai">🤖 Bonjour ! Comment puis-je t’aider ?</div>';localStorage.removeItem(HISTORY)}
+function effacer(){clearHistory()}
+function bienvenue(){const n=document.getElementById('nom').value.trim();document.getElementById('salut').textContent=n?'Bienvenue, '+n+' !':'Bienvenue dans Delphin DM !';if(n){document.getElementById('displayName').value=n;savePreference('name',n)}}
+function showAbout(){alert('Delphin DM 🌍\nUn espace pour échanger entre humains et intelligence artificielle.\nVersion de démonstration 1.1.')}
+function envoyer(){const q=document.getElementById('question'),t=q.value.trim();if(!t)return;const zone=document.getElementById('messages'),u=document.createElement('div');u.className='msg user';u.textContent='👤 '+t;zone.appendChild(u);const a=document.createElement('div');a.className='msg ai';a.textContent='🤖 Merci pour ton message ! Ceci est encore une version de démonstration. Une véritable IA sera connectée dans une prochaine étape.';zone.appendChild(a);q.value='';zone.scrollTop=zone.scrollHeight;saveHistory()}
+document.addEventListener('DOMContentLoaded',()=>{const p=readPrefs();if(p.theme){document.getElementById('themeChoice').value=p.theme;document.body.classList.toggle('light',p.theme==='light')}if(p.fontSize){document.getElementById('fontChoice').value=p.fontSize;document.body.style.fontSize=p.fontSize+'px'}if(p.language)document.getElementById('languageChoice').value=p.language;if(p.style)document.getElementById('styleChoice').value=p.style;if(p.name){document.getElementById('displayName').value=p.name;document.getElementById('nom').value=p.name}historyEnabled=!!p.historyEnabled;document.getElementById('historyChoice').checked=historyEnabled;if(historyEnabled){const h=localStorage.getItem(HISTORY);if(h)document.getElementById('messages').innerHTML=h}});
+</script></body></html>
