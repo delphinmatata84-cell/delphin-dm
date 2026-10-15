@@ -57,6 +57,60 @@ function clearHistory(){document.getElementById('messages').innerHTML='<div clas
 function effacer(){clearHistory()}
 function bienvenue(){const n=document.getElementById('nom').value.trim();document.getElementById('salut').textContent=n?'Bienvenue, '+n+' !':'Bienvenue dans Delphin DM !';if(n){document.getElementById('displayName').value=n;savePreference('name',n)}}
 function showAbout(){alert('Delphin DM 🌍\nUn espace pour échanger entre humains et intelligence artificielle.\nVersion de démonstration 1.1.')}
-function envoyer(){const q=document.getElementById('question'),t=q.value.trim();if(!t)return;const zone=document.getElementById('messages'),u=document.createElement('div');u.className='msg user';u.textContent='👤 '+t;zone.appendChild(u);const a=document.createElement('div');a.className='msg ai';a.textContent='🤖 Merci pour ton message ! Ceci est encore une version de démonstration. Une véritable IA sera connectée dans une prochaine étape.';zone.appendChild(a);q.value='';zone.scrollTop=zone.scrollHeight;saveHistory()}
+async function envoyer() {
+  const q = document.getElementById('question');
+  const t = q.value.trim();
+
+  if (!t) return;
+
+  const zone = document.getElementById('messages');
+
+  const u = document.createElement('div');
+  u.className = 'msg user';
+  u.textContent = '👤 ' + t;
+  zone.appendChild(u);
+
+  const a = document.createElement('div');
+  a.className = 'msg ai';
+  a.textContent = '🤖 Réflexion en cours...';
+  zone.appendChild(a);
+
+  q.value = '';
+  zone.scrollTop = zone.scrollHeight;
+
+  try {
+    const reponse = await fetch(
+      'https://hidden-term-b5fa.delphinmatata84.workers.dev',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          question: t
+        })
+      }
+    );
+
+    const donnees = await reponse.json();
+
+    if (!reponse.ok || donnees.error) {
+      throw new Error('Erreur du service IA');
+    }
+
+    a.textContent =
+      '🤖 ' + (donnees.answer || 'Aucune réponse reçue.');
+
+  } catch (erreur) {
+    a.textContent =
+      '🤖 Je ne peux pas contacter l’IA pour le moment. Réessaie dans quelques instants.';
+  } finally {
+    zone.scrollTop = zone.scrollHeight;
+
+    if (typeof saveHistory === 'function') {
+      saveHistory();
+    }
+  }
+}
 document.addEventListener('DOMContentLoaded',()=>{const p=readPrefs();if(p.theme){document.getElementById('themeChoice').value=p.theme;document.body.classList.toggle('light',p.theme==='light')}if(p.fontSize){document.getElementById('fontChoice').value=p.fontSize;document.body.style.fontSize=p.fontSize+'px'}if(p.language)document.getElementById('languageChoice').value=p.language;if(p.style)document.getElementById('styleChoice').value=p.style;if(p.name){document.getElementById('displayName').value=p.name;document.getElementById('nom').value=p.name}historyEnabled=!!p.historyEnabled;document.getElementById('historyChoice').checked=historyEnabled;if(historyEnabled){const h=localStorage.getItem(HISTORY);if(h)document.getElementById('messages').innerHTML=h}});
 </script></body></html>
