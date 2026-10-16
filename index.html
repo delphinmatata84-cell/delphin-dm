@@ -40,6 +40,7 @@ button:hover{opacity:.88}.secondary{background:var(--blue);color:white}.ghost{ba
 <section class="card"><h2>Bienvenue sur Delphin DM 👋</h2><p>Discute, pose tes questions et découvre les possibilités de l'intelligence artificielle.</p><input id="nom" placeholder="Ton prénom (facultatif)"><button onclick="bienvenue()">Entrer dans la discussion</button><p id="salut" class="small"></p></section>
 <section class="card"><h2>💬 Discussion avec l'IA</h2><div id="messages" aria-live="polite"><div class="msg ai">🤖 Bonjour ! Bienvenue sur Delphin DM. Comment puis-je t'aider aujourd'hui ?</div></div>
 <textarea id="question" rows="3" placeholder="Écris ton message ici..."></textarea><button onclick="envoyer()">Envoyer</button><button class="secondary" onclick="effacer()">Effacer la discussion</button><p class="small">Version de démonstration : les réponses sont simulées. Une véritable IA devra être connectée plus tard.</p></section>
+  <button onclick="nouvelleDiscussion()">➕ Nouvelle discussion</button>
 <section class="card"><h2>🌐 Notre vision</h2><p>Delphin DM veut rapprocher les humains et l'intelligence artificielle grâce à un espace simple et accessible.</p><p class="small">Les comptes sécurisés, les conversations en ligne et les appels audio/vidéo seront ajoutés dans de futures étapes.</p></section>
 </main><footer>© 2026 Delphin DM · Dieu pourvoira 🙏</footer>
 <script>
@@ -55,6 +56,10 @@ function saveHistory(){if(historyEnabled)localStorage.setItem(HISTORY,document.g
 function restoreHistory(){const h=localStorage.getItem(HISTORY);if(h){document.getElementById('messages').innerHTML=h;document.getElementById('messages').scrollTop=document.getElementById('messages').scrollHeight;alert('Historique restauré.')}else alert('Aucun historique enregistré sur cet appareil.')}
 function clearHistory(){document.getElementById('messages').innerHTML='<div class="msg ai">🤖 Bonjour ! Comment puis-je t’aider ?</div>';localStorage.removeItem(HISTORY)}
 function effacer(){clearHistory()}
+  function nouvelleDiscussion(){
+  document.getElementById('messages').innerHTML='';
+  document.getElementById('messages').scrollTop=0;
+  }
 function bienvenue(){const n=document.getElementById('nom').value.trim();document.getElementById('salut').textContent=n?'Bienvenue, '+n+' !':'Bienvenue dans Delphin DM !';if(n){document.getElementById('displayName').value=n;savePreference('name',n)}}
 function showAbout(){alert('Delphin DM 🌍\nUn espace pour échanger entre humains et intelligence artificielle.\nVersion de démonstration 1.1.')}
 async function envoyer() {
