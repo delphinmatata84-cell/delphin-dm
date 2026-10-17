@@ -56,10 +56,12 @@ function saveHistory(){if(historyEnabled)localStorage.setItem(HISTORY,document.g
 function restoreHistory(){const h=localStorage.getItem(HISTORY);if(h){document.getElementById('messages').innerHTML=h;document.getElementById('messages').scrollTop=document.getElementById('messages').scrollHeight;alert('Historique restauré.')}else alert('Aucun historique enregistré sur cet appareil.')}
 function clearHistory(){document.getElementById('messages').innerHTML='<div class="msg ai">🤖 Bonjour ! Comment puis-je t’aider ?</div>';localStorage.removeItem(HISTORY)}
 function effacer(){clearHistory()}
-  function nouvelleDiscussion(){
+function nouvelleDiscussion(){
+  saveHistory();
   document.getElementById('messages').innerHTML='';
   document.getElementById('messages').scrollTop=0;
-  }
+}
+  
 function bienvenue(){const n=document.getElementById('nom').value.trim();document.getElementById('salut').textContent=n?'Bienvenue, '+n+' !':'Bienvenue dans Delphin DM !';if(n){document.getElementById('displayName').value=n;savePreference('name',n)}}
 function showAbout(){alert('Delphin DM 🌍\nUn espace pour échanger entre humains et intelligence artificielle.\nVersion de démonstration 1.1.')}
 async function envoyer() {
