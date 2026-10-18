@@ -194,4 +194,51 @@ async function sauvegarderEchange(question, reponse) {
     console.error('Erreur de sauvegarde :', error.message);
   }
 }
+
+async function chargerConversationsCloud() {
+  const { data: auth, error: authError } =
+    await supabaseClient.auth.getUser();
+
+  if (authError || !auth.user) return;
+
+  const { data, error } = await supabaseClient
+    .from('conversations')
+    .select('title, messages, created_at')
+    .eq('user_id', auth.user.id)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('Erreur de chargement :', error.message);
+    return;
+  }
+
+  const zone = document.getElementById('messages');
+  if (!zone) return;
+
+  zone.innerHTML = '';
+
+  for (const conversation of data) {
+    for (const message of conversation.messages || []) {
+      const bloc = document.createElement('div');
+      bloc.className =
+        message.role === 'user' ? 'msg user' : 'msg ai';
+
+      bloc.textContent =
+        (message.role === 'user' ? '👤 ' : '🤖 ') +
+        message.content;
+
+      zone.appendChild(bloc);
+    }
+  }
+
+  zone.scrollTop = zone.scrollHeight;
+}
+
+chargerConversationsCloud();
+
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if (session && ['SIGNED_IN', 'INITIAL_SESSION'].includes(event)) {
+    setTimeout(chargerConversationsCloud, 0);
+  }
+});
 </script></body></html>
