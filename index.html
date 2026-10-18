@@ -37,7 +37,9 @@ button:hover{opacity:.88}.secondary{background:var(--blue);color:white}.ghost{ba
 <div class="settingrow"><label>Confidentialité et informations</label><p class="small">Cette démonstration enregistre les préférences et, si activé, l'historique dans le navigateur de cet appareil. Les données ne sont pas synchronisées entre appareils. N'y saisis pas d'informations secrètes.</p><button class="ghost" onclick="showAbout()">À propos de Delphin DM</button></div>
 <div class="settingrow"><label>Aide</label><p class="small">Les réponses du chat sont encore simulées. Une connexion sécurisée à un service d'IA est nécessaire pour obtenir de vraies réponses.</p></div>
 <button onclick="toggleSettings()">Fermer les paramètres</button></section>
-<section class="card"><h2>Bienvenue sur Delphin DM 👋</h2><p>Discute, pose tes questions et découvre les possibilités de l'intelligence artificielle.</p><input id="nom" placeholder="Ton prénom (facultatif)"><button onclick="bienvenue()">Entrer dans la discussion</button><p id="salut" class="small"></p></section>
+<section class="card"><h2>Bienvenue sur Delphin DM 👋</h2><p>Discute, pose tes questions et découvre les possibilités de l'intelligence artificielle.</p><input id="nom" placeholder="Ton prénom (facultatif)">
+<button onclick="connexionGoogle()">🔐 Se connecter avec Google</button>
+  <button onclick="bienvenue()">Entrer dans la discussion</button><p id="salut" class="small"></p></section>
 <section class="card"><h2>💬 Discussion avec l'IA</h2><div id="messages" aria-live="polite"><div class="msg ai">🤖 Bonjour ! Bienvenue sur Delphin DM. Comment puis-je t'aider aujourd'hui ?</div></div>
 <textarea id="question" rows="3" placeholder="Écris ton message ici..."></textarea><button onclick="envoyer()">Envoyer</button><button class="secondary" onclick="effacer()">Effacer la discussion</button><p class="small">Version de démonstration : les réponses sont simulées. Une véritable IA devra être connectée plus tard.</p></section>
   <button onclick="nouvelleDiscussion()">➕ Nouvelle discussion</button>
