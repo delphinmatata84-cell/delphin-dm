@@ -45,9 +45,10 @@ button:hover{opacity:.88}.secondary{background:var(--blue);color:white}.ghost{ba
   <button onclick="nouvelleDiscussion()">➕ Nouvelle discussion</button>
 <section class="card"><h2>🌐 Notre vision</h2><p>Delphin DM veut rapprocher les humains et l'intelligence artificielle grâce à un espace simple et accessible.</p><p class="small">Les comptes sécurisés, les conversations en ligne et les appels audio/vidéo seront ajoutés dans de futures étapes.</p></section>
 </main><footer>© 2026 Delphin DM · Dieu pourvoira 🙏</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const PREFS='delphinDM_preferences_v1',HISTORY='delphinDM_history_v1';let historyEnabled=false;
-function readPrefs(){try{return JSON.parse(localStorage.getItem(PREFS)||'{}')}catch(e){return {}}}
+function readPrefs(){try{return JSON.parsStorage.getItem(PREFS)||'{}')}catch(e){return {}}}
 function savePreference(k,v){const p=readPrefs();p[k]=v;localStorage.setItem(PREFS,JSON.stringify(p))}
 function toggleSettings(){const panel=document.getElementById('settingsPanel');panel.classList.toggle('open');document.getElementById('settingsButton').setAttribute('aria-expanded',panel.classList.contains('open')?'true':'false');if(panel.classList.contains('open'))panel.scrollIntoView({behavior:'smooth',block:'start'})}
 function applyTheme(){const v=document.getElementById('themeChoice').value;document.body.classList.toggle('light',v==='light');savePreference('theme',v)}
