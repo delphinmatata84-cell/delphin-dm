@@ -128,6 +128,15 @@ async function envoyer() {
 document.addEventListener('DOMContentLoaded',()=>{const p=readPrefs();if(p.theme){document.getElementById('themeChoice').value=p.theme;document.body.classList.toggle('light',p.theme==='light')}if(p.fontSize){document.getElementById('fontChoice').value=p.fontSize;document.body.style.fontSize=p.fontSize+'px'}if(p.language)document.getElementById('languageChoice').value=p.language;if(p.style)document.getElementById('styleChoice').value=p.style;if(p.name){document.getElementById('displayName').value=p.name;document.getElementById('nom').value=p.name}historyEnabled=!!p.historyEnabled;document.getElementById('historyChoice').checked=historyEnabled;if(historyEnabled){const h=localStorage.getItem(HISTORY);if(h)document.getElementById('messages').innerHTML=h}});
 
 async function connexionGoogle(){
-  alert("La connexion Google nécessite encore la bibliothèque Supabase dans cette page.");
+  const { error } = await supabaseClient.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'https://delphinmatata84-cell.github.io/delphin-dm/'
+    }
+  });
+
+  if (error) {
+    alert('Erreur de connexion Google : ' + error.message);
+  }
 }
 </script></body></html>
