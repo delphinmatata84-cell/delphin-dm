@@ -165,4 +165,29 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
     zone.textContent = 'Aucun compte connecté.';
   }
 });
+
+async function sauvegarderEchange(question, reponse) {
+  const { data, error: authError } =
+    await supabaseClient.auth.getUser();
+
+  if (authError || !data.user) {
+    alert('Connecte-toi avec Google pour sauvegarder.');
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from('conversations')
+    .insert({
+      user_id: data.user.id,
+      title: question.slice(0, 60),
+      messages: [
+        { role: 'user', content: question },
+        { role: 'assistant', content: reponse }
+      ]
+    });
+
+  if (error) {
+    console.error('Erreur de sauvegarde :', error.message);
+  }
+}
 </script></body></html>
