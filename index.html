@@ -115,6 +115,10 @@ async function envoyer() {
     a.textContent =
       '🤖 ' + (donnees.answer || 'Aucune réponse reçue.');
 
+    await sauvegarderEchange(
+      t,
+      donnees.answer || 'Aucune réponse reçue.'
+    );
   } catch (erreur) {
     a.textContent =
       '🤖 Je ne peux pas contacter l’IA pour le moment. Réessaie dans quelques instants.';
