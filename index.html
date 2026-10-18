@@ -140,4 +140,29 @@ async function connexionGoogle(){
     alert('Erreur de connexion Google : ' + error.message);
   }
 }
+
+async function afficherCompteGoogle() {
+  const zone = document.getElementById('compteGoogle');
+
+  const { data, error } = await supabaseClient.auth.getUser();
+
+  if (error || !data.user) {
+    zone.textContent = 'Aucun compte connecté.';
+    return;
+  }
+
+  zone.textContent = 'Connecté : ' + (data.user.email || 'Compte Google');
+}
+
+afficherCompteGoogle();
+
+supabaseClient.auth.onAuthStateChange((_event, session) => {
+  const zone = document.getElementById('compteGoogle');
+
+  if (session && session.user) {
+    zone.textContent = 'Connecté : ' + (session.user.email || 'Compte Google');
+  } else {
+    zone.textContent = 'Aucun compte connecté.';
+  }
+});
 </script></body></html>
