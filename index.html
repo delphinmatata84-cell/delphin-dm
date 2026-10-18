@@ -39,6 +39,7 @@ button:hover{opacity:.88}.secondary{background:var(--blue);color:white}.ghost{ba
 <button onclick="toggleSettings()">Fermer les paramètres</button></section>
 <section class="card"><h2>Bienvenue sur Delphin DM 👋</h2><p>Discute, pose tes questions et découvre les possibilités de l'intelligence artificielle.</p><input id="nom" placeholder="Ton prénom (facultatif)">
 <button onclick="connexionGoogle()">🔐 Se connecter avec Google</button>
+  <p id="compteGoogle" class="small"></p>
   <button onclick="bienvenue()">Entrer dans la discussion</button><p id="salut" class="small"></p></section>
 <section class="card"><h2>💬 Discussion avec l'IA</h2><div id="messages" aria-live="polite"><div class="msg ai">🤖 Bonjour ! Bienvenue sur Delphin DM. Comment puis-je t'aider aujourd'hui ?</div></div>
 <textarea id="question" rows="3" placeholder="Écris ton message ici..."></textarea><button onclick="envoyer()">Envoyer</button><button class="secondary" onclick="effacer()">Effacer la discussion</button><p class="small">Version de démonstration : les réponses sont simulées. Une véritable IA devra être connectée plus tard.</p></section>
