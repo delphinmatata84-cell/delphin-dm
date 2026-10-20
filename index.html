@@ -174,16 +174,13 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
     zone.textContent = 'Aucun compte connecté.';
   }
 });
-
 async function sauvegarderEchange(question, reponse) {
   const { data, error: authError } =
     await supabaseClient.auth.getUser();
-
   if (authError || !data.user) {
     alert('Connecte-toi avec Google pour sauvegarder.');
     return;
   }
-
   const { error } = await supabaseClient
     .from('conversations')
     .insert({
@@ -194,53 +191,94 @@ async function sauvegarderEchange(question, reponse) {
         { role: 'assistant', content: reponse }
       ]
     });
-
   if (error) {
     console.error('Erreur de sauvegarde :', error.message);
   }
 }
+async function afficherListeConversations() {
+  const liste = document.getElementById('listeConversations');
+  liste.innerHTML = 'Chargement...';
 
-async function chargerConversationsCloud() {
-  const { data: auth, error: authError } =
-    await supabaseClient.auth.getUser();
+  const { data: auth } = await supabaseClient.auth.getUser();
 
-  if (authError || !auth.user) return;
+  if (!auth.user) {
+    liste.textContent = 'Connecte-toi avec Google pour voir tes conversations.';
+    return;
+  }
 
   const { data, error } = await supabaseClient
     .from('conversations')
     .select('title, messages, created_at')
     .eq('user_id', auth.user.id)
-    .order('created_at', { ascending: true });
+    .order('created_at', { ascending: false });
 
+  if (error) {
+    liste.textContent = 'Impossible de charger les conversations.';
+    return;
+  }
+
+  liste.innerHTML = '';
+
+  if (!data || data.length === 0) {
+    liste.textContent = 'Aucune conversation enregistrée.';
+    return;
+  }
+
+  data.forEach((conversation) => {
+    const bouton = document.createElement('button');
+    bouton.className = 'secondary';
+    bouton.style.display = 'block';
+    bouton.style.width = '100%';
+    bouton.textContent = '💬 ' + (conversation.title || 'Conversation sans titre');
+
+    bouton.onclick = () => {
+      const zone = document.getElementById('messages');
+      zone.innerHTML = '';
+
+      (conversation.messages || []).forEach((message) => {
+        const bloc = document.createElement('div');
+        bloc.className = message.role === 'user' ? 'msg user' : 'msg ai';
+        bloc.textContent = (message.role === 'user' ? '👤 ' : '🤖 ') + message.content;
+        zone.appendChild(bloc);
+      });
+
+      zone.scrollTop = zone.scrollHeight;
+      document.getElementById('question').value = '';
+    };
+
+    liste.appendChild(bouton);
+  });
+  }
+async function chargerConversationsCloud() {
+  const { data: auth, error: authError } =
+    await supabaseClient.auth.getUser();
+  if (authError || !auth.user) return;
+  const { data, error } = await supabaseClient
+    .from('conversations')
+    .select('title, messages, created_at')
+    .eq('user_id', auth.user.id)
+    .order('created_at', { ascending: true });
   if (error) {
     console.error('Erreur de chargement :', error.message);
     return;
   }
-
   const zone = document.getElementById('messages');
   if (!zone) return;
-
   zone.innerHTML = '';
-
   for (const conversation of data) {
     for (const message of conversation.messages || []) {
       const bloc = document.createElement('div');
       bloc.className =
         message.role === 'user' ? 'msg user' : 'msg ai';
-
       bloc.textContent =
         (message.role === 'user' ? '👤 ' : '🤖 ') +
         message.content;
-
       zone.appendChild(bloc);
     }
   }
-
   zone.scrollTop = zone.scrollHeight;
 }
-
 chargerConversationsCloud();
-
 supabaseClient.auth.onAuthStateChange((event, session) => {
   if (session && ['SIGNED_IN', 'INITIAL_SESSION'].includes(event)) {
     setTimeout(chargerConversationsCloud, 0);
