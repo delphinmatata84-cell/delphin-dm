@@ -142,9 +142,7 @@ async function connexionGoogle(){
 }
 async function afficherCompteGoogle() {
   const zone = document.getElementById('compteGoogle');
-
   const { data, error } = await supabaseClient.auth.getUser();
-
   if (error || !data.user) {
     zone.textContent = 'Aucun compte connecté.';
     return;
@@ -154,7 +152,6 @@ async function afficherCompteGoogle() {
 afficherCompteGoogle();
 supabaseClient.auth.onAuthStateChange((_event, session) => {
   const zone = document.getElementById('compteGoogle');
-
   if (session && session.user) {
     zone.textContent = 'Connecté : ' + (session.user.email || 'Compte Google');
   } else {
@@ -162,28 +159,38 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
   }
 });
 async function sauvegarderEchange(question, reponse) {
-  const { data, error: authError } =
+  const { data: auth, error: authError } =
     await supabaseClient.auth.getUser();
-  if (authError || !data.user) {
+  if (authError || !auth.user) {
     alert('Connecte-toi avec Google pour sauvegarder.');
-    return;
+    return false;
   }
-  const { error } = await supabaseClient
+  const messagesAEnregistrer = [
+    { role: 'user', content: question },
+    { role: 'assistant', content: reponse }
+  ];
+  const { data, error } = await supabaseClient
     .from('conversations')
     .insert({
-      user_id: data.user.id,
+      user_id: auth.user.id,
       title: question.slice(0, 60),
-      messages: [
-        { role: 'user', content: question },
-        { role: 'assistant', content: reponse }
-      ]
-    });
+      messages: messagesAEnregistrer
+    })
+    .select('messages')
+    .single();
   if (error) {
-  console.error('Erreur de sauvegarde :', error.message);
-  alert('Erreur de sauvegarde : ' + error.message);
-  return false;
-}
-return true;
+    alert('Erreur de sauvegarde : ' + error.message);
+    return false;
+  }
+  const nombreMessages = Array.isArray(data.messages)
+    ? data.messages.length
+    : 0;
+  alert(
+    'Enregistrement réussi : ' +
+    nombreMessages +
+    ' message(s) sauvegardé(s).'
+  );
+  return true;
 }
 async function afficherListeConversations() {
   const liste = document.getElementById('listeConversations');
