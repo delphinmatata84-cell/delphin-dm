@@ -195,9 +195,7 @@ async function sauvegarderEchange(question, reponse) {
 async function afficherListeConversations() {
   const liste = document.getElementById('listeConversations');
   liste.innerHTML = 'Chargement...';
-
   const { data: auth } = await supabaseClient.auth.getUser();
-
   if (!auth.user) {
     liste.textContent = 'Connecte-toi avec Google pour voir tes conversations.';
     return;
@@ -207,7 +205,6 @@ async function afficherListeConversations() {
     .select('title, messages, created_at')
     .eq('user_id', auth.user.id)
     .order('created_at', { ascending: false });
-
   if (error) {
     liste.textContent = 'Impossible de charger les conversations.';
     return;
@@ -223,10 +220,33 @@ async function afficherListeConversations() {
     bouton.className = 'secondary';
     bouton.style.display = 'block';
     bouton.style.width = '100%';
-    bouton.textContent = '💬 ' + (conversation.title || 'Conversation sans titre');
-    bouton.onclick = () => {
-      const zone = document.getElementById('messages');
-      zone.innerHTML = '';
+    bouton.textContent = '💬 ' + (conversation.title || 'Conversation sans titre'); 
+bouton.onclick = () => {
+  const zone = document.getElementById('messages');
+  zone.innerHTML = '';
+  let messages = conversation.messages;
+  if (typeof messages === 'string') {
+    try {
+      messages = JSON.parse(messages);
+    } catch (e) {
+      messages = [];
+    }
+  }
+  if (!Array.isArray(messages)) {
+    messages = [];
+  }
+  messages.forEach((message) => {
+    const bloc = document.createElement('div');
+    bloc.className =
+      message.role === 'user' ? 'msg user' : 'msg ai';
+    bloc.textContent =
+      (message.role === 'user' ? '👤 ' : '🤖 ') +
+      (message.content || '');
+    zone.appendChild(bloc);
+  });
+  zone.scrollTop = zone.scrollHeight;
+  document.getElementById('question').value = '';
+};
       (conversation.messages || []).forEach((message) => {
         const bloc = document.createElement('div');
         bloc.className = message.role === 'user' ? 'msg user' : 'msg ai';
