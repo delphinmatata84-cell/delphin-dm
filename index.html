@@ -73,7 +73,6 @@ function nouvelleDiscussion(){
   document.getElementById('messages').innerHTML='';
   document.getElementById('messages').scrollTop=0;
 }
-  
 function bienvenue(){const n=document.getElementById('nom').value.trim();document.getElementById('salut').textContent=n?'Bienvenue, '+n+' !':'Bienvenue dans Delphin DM !';if(n){document.getElementById('displayName').value=n;savePreference('name',n)}}
 function showAbout(){alert('Delphin DM 🌍\nUn espace pour échanger entre humains et intelligence artificielle.\nVersion de démonstration 1.1.')}
 async function envoyer() {
@@ -120,11 +119,12 @@ async function envoyer() {
     a.textContent =
       '🤖 ' + (donnees.answer || 'Aucune réponse reçue.');
 
-    await sauvegarderEchange(
-      t,
-      donnees.answer || 'Aucune réponse reçue.'
-    );
-  } catch (erreur) {
+  
+const resultatSauvegarde = await sauvegarderEchange(
+  t,
+  donnees.answer || 'Aucune réponse reçue.'
+);
+} catch (erreur) {
     a.textContent =
       '🤖 Je ne peux pas contacter l’IA pour le moment. Réessaie dans quelques instants.';
   } finally {
@@ -136,7 +136,6 @@ async function envoyer() {
   }
 }
 document.addEventListener('DOMContentLoaded',()=>{const p=readPrefs();if(p.theme){document.getElementById('themeChoice').value=p.theme;document.body.classList.toggle('light',p.theme==='light')}if(p.fontSize){document.getElementById('fontChoice').value=p.fontSize;document.body.style.fontSize=p.fontSize+'px'}if(p.language)document.getElementById('languageChoice').value=p.language;if(p.style)document.getElementById('styleChoice').value=p.style;if(p.name){document.getElementById('displayName').value=p.name;document.getElementById('nom').value=p.name}historyEnabled=!!p.historyEnabled;document.getElementById('historyChoice').checked=historyEnabled;if(historyEnabled){const h=localStorage.getItem(HISTORY);if(h)document.getElementById('messages').innerHTML=h}});
-
 async function connexionGoogle(){
   const { error } = await supabaseClient.auth.signInWithOAuth({
     provider: 'google',
@@ -149,7 +148,6 @@ async function connexionGoogle(){
     alert('Erreur de connexion Google : ' + error.message);
   }
 }
-
 async function afficherCompteGoogle() {
   const zone = document.getElementById('compteGoogle');
 
