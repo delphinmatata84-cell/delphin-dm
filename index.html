@@ -34,6 +34,11 @@ button:hover{opacity:.88}.secondary{background:var(--blue);color:white}.ghost{ba
 <div class="settingrow"><label for="languageChoice">Langue préférée</label><select id="languageChoice" onchange="savePreference('language',this.value)"><option value="fr">Français</option><option value="en">English</option><option value="ln">Lingala</option><option value="sw">Kiswahili</option></select><p class="small">La préférence est enregistrée. La traduction complète sera ajoutée séparément.</p></div>
 <div class="settingrow"><label for="styleChoice">Style de réponse de l'IA</label><select id="styleChoice" onchange="savePreference('style',this.value)"><option value="balanced">Équilibré</option><option value="short">Court et simple</option><option value="detailed">Détaillé et pédagogique</option><option value="professional">Professionnel</option><option value="encouraging">Encourageant</option></select><p class="small">Cette préférence sera utilisée lorsque le service d'IA réel sera connecté.</p></div>
 <div class="settingrow"><label>Historique des conversations</label><div class="switchline"><input type="checkbox" id="historyChoice" onchange="setHistory(this.checked)"><span>Enregistrer les conversations sur cet appareil</span></div><button class="secondary" onclick="restoreHistory()">Restaurer l'historique</button><button onclick="clearHistory()">Effacer la conversation</button></div>
+<div class="settingrow"><label>Mes anciennes conversations</label>
+<p class="small">Choisis une conversation pour la retrouver.</p>
+<button class="secondary" onclick="afficherListeConversations()">Actualiser la liste</button>
+<div id="listeConversations"></div>
+</div>
 <div class="settingrow"><label>Confidentialité et informations</label><p class="small">Cette démonstration enregistre les préférences et, si activé, l'historique dans le navigateur de cet appareil. Les données ne sont pas synchronisées entre appareils. N'y saisis pas d'informations secrètes.</p><button class="ghost" onclick="showAbout()">À propos de Delphin DM</button></div>
 <div class="settingrow"><label>Aide</label><p class="small">Les réponses du chat sont encore simulées. Une connexion sécurisée à un service d'IA est nécessaire pour obtenir de vraies réponses.</p></div>
 <button onclick="toggleSettings()">Fermer les paramètres</button></section>
