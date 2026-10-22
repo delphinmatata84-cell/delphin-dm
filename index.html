@@ -217,6 +217,7 @@ async function afficherListeConversations() {
   }
   data.forEach((conversation) => {
     const bouton = document.createElement('button');
+    bouton.type = 'button';
     bouton.className = 'secondary';
     bouton.style.display = 'block';
     bouton.style.width = '100%';
