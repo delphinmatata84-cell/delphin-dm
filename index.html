@@ -291,7 +291,6 @@ async function chargerConversationsCloud() {
     }
   zone.scrollTop = zone.scrollHeight;
 }
-chargerConversationsCloud();
 supabaseClient.auth.onAuthStateChange((event, session) => {
   if (session && ['SIGNED_IN', 'INITIAL_SESSION'].includes(event)) {
     setTimeout(chargerConversationsCloud, 0);
