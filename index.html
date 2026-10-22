@@ -223,7 +223,6 @@ async function afficherListeConversations() {
     bouton.style.width = '100%';
     bouton.textContent = '💬 ' + (conversation.title || 'Conversation sans titre'); 
 bouton.onclick = () => {
-  alert('Le clic est détecté');
   const zone = document.getElementById('messages');
   zone.innerHTML = '';
   let messages = conversation.messages;
