@@ -236,6 +236,8 @@ bouton.onclick = () => {
   if (!Array.isArray(messages)) {
     messages = [];
   }
+  alert('Nombre de messages : ' + messages.length);
+alert('Rôles : ' + messages.map(m => m.role).join(', '));
   messages.forEach((message) => {
     const bloc = document.createElement('div');
     bloc.className =
