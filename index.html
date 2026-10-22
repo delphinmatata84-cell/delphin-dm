@@ -247,15 +247,6 @@ bouton.onclick = () => {
   zone.scrollTop = zone.scrollHeight;
   document.getElementById('question').value = '';
 };
-      (conversation.messages || []).forEach((message) => {
-        const bloc = document.createElement('div');
-        bloc.className = message.role === 'user' ? 'msg user' : 'msg ai';
-        bloc.textContent = (message.role === 'user' ? '👤 ' : '🤖 ') + message.content;
-        zone.appendChild(bloc);
-      });
-      zone.scrollTop = zone.scrollHeight;
-      document.getElementById('question').value = '';
-    };
     liste.appendChild(bouton);
   });
   }
