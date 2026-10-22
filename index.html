@@ -268,16 +268,27 @@ async function chargerConversationsCloud() {
   if (!zone) return;
   zone.innerHTML = '';
   for (const conversation of data) {
-    for (const message of conversation.messages || []) {
-      const bloc = document.createElement('div');
-      bloc.className =
-        message.role === 'user' ? 'msg user' : 'msg ai';
-      bloc.textContent =
-        (message.role === 'user' ? '👤 ' : '🤖 ') +
-        message.content;
-      zone.appendChild(bloc);
+  let messages = conversation.messages;
+  if (typeof messages === 'string') {
+    try {
+      messages = JSON.parse(messages);
+    } catch (e) {
+      messages = [];
     }
   }
+  if (!Array.isArray(messages)) {
+    messages = [];
+  }
+  for (const message of messages) {
+    const bloc = document.createElement('div');
+    bloc.className =
+      message.role === 'user' ? 'msg user' : 'msg ai';
+    bloc.textContent =
+      (message.role === 'user' ? '👤 ' : '🤖 ') +
+      (message.content || '');
+    zone.appendChild(bloc);
+  }
+    }
   zone.scrollTop = zone.scrollHeight;
 }
 chargerConversationsCloud();
