@@ -4,23 +4,261 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07111f"><title>Delphin DM - Humains & IA</title>
 <style>
-:root{--bg:#07111f;--panel:#10243b;--panel2:#0c1d32;--text:#fff;--muted:#b8c8dc;--border:#294766;--gold:#ffcf33;--blue:#2588e8;--input:#07111f}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;font-size:16px}
-body.light{--bg:#f2f6fb;--panel:#fff;--panel2:#e7eef7;--text:#142236;--muted:#52647a;--border:#c6d4e4;--input:#fff}
-header{padding:18px 16px;background:var(--panel2);border-bottom:2px solid var(--gold)}
-.headerrow{max-width:760px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.logo{font-size:27px;font-weight:bold;color:var(--gold)}.logo span{color:#48a7ff}header p{margin:8px 0 0;color:var(--muted)}
-main{max-width:760px;margin:22px auto;padding:0 14px}.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:16px}
-h2{margin-top:0;color:var(--gold);font-size:1.25em}input,textarea,select{width:100%;padding:13px;margin:8px 0;background:var(--input);color:var(--text);border:1px solid #47617d;border-radius:10px;font-size:1em}
-button{padding:12px 15px;border:0;border-radius:10px;background:var(--gold);color:#101827;font-weight:bold;font-size:15px;cursor:pointer;margin:4px 3px 4px 0}
-button:hover{opacity:.88}.secondary{background:var(--blue);color:white}.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
-#messages{height:260px;overflow-y:auto;background:var(--input);padding:10px;border:1px solid var(--border);border-radius:12px;margin-bottom:12px}
-.msg{padding:10px 12px;margin:8px 0;border-radius:12px;line-height:1.45;overflow-wrap:anywhere}.user{background:#174f80;color:#fff;text-align:right}.ai{background:var(--panel2)}
-.small{font-size:.82em;color:var(--muted);line-height:1.5}footer{text-align:center;padding:20px;color:var(--muted);font-size:13px}
-#settingsPanel{display:none}#settingsPanel.open{display:block}.settingrow{padding:12px 0;border-bottom:1px solid var(--border)}.settingrow:last-child{border-bottom:0}
-.settingrow label{display:block;font-weight:bold;margin-bottom:5px}.switchline{display:flex;align-items:center;gap:10px}.switchline input{width:auto;margin:0}
-.topbuttons{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
-@media(max-width:520px){.headerrow{align-items:flex-start;flex-direction:column}.logo{font-size:24px}}
+
+:root {
+  --bg: #06101f;
+  --panel: #0d1b2e;
+  --panel2: #122640;
+  --text: #ffffff;
+  --muted: #bdc9d9;
+  --border: #29415f;
+  --gold: #f5c451;
+  --blue: #287fe0;
+  --input: #081426;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+body.light {
+  --bg: #f4f6fb;
+  --panel: #ffffff;
+  --panel2: #eaf0f8;
+  --text: #17243a;
+  --muted: #5d6b80;
+  --border: #d5deea;
+  --input: #ffffff;
+}
+
+header {
+  padding: 22px 16px;
+  background: linear-gradient(135deg, #0b1930, #142d4a);
+  border-bottom: 2px solid var(--gold);
+  box-shadow: 0 5px 22px #0003;
+}
+
+.headerrow {
+  max-width: 760px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.logo {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  color: var(--gold);
+}
+
+.logo span {
+  color: #ffffff;
+}
+
+header p {
+  margin: 8px 0 0;
+  color: #d0d9e7;
+}
+
+main {
+  max-width: 760px;
+  margin: 28px auto;
+  padding: 0 14px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px #0002;
+}
+
+h2 {
+  margin-top: 0;
+  color: var(--gold);
+  font-size: 1.3em;
+  line-height: 1.4;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  background: var(--input);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font: inherit;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  padding: 12px 17px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffda76, #e8b638);
+  color: #101827;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 4px 3px 4px 0;
+  box-shadow: 0 3px 10px #0002;
+}
+
+button:hover {
+  filter: brightness(1.06);
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+.secondary {
+  background: linear-gradient(135deg, #318de8, #2167bd);
+  color: #ffffff;
+}
+
+.ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+#messages {
+  height: 300px;
+  overflow-y: auto;
+  background: var(--input);
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 14px;
+  scroll-behavior: smooth;
+}
+
+.msg {
+  padding: 12px 14px;
+  margin: 10px 0;
+  border-radius: 15px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.user {
+  background: #174c78;
+  color: #ffffff;
+  text-align: right;
+  border: 1px solid #2b6595;
+  border-bottom-right-radius: 5px;
+}
+
+.ai {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 5px;
+}
+
+.small {
+  font-size: .86em;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  padding: 24px 16px;
+  color: var(--muted);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+}
+
+#settingsPanel {
+  display: none;
+}
+
+#settingsPanel.open {
+  display: block;
+}
+
+.settingrow {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.settingrow:last-child {
+  border-bottom: 0;
+}
+
+.settingrow label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 7px;
+}
+
+.switchline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.switchline input {
+  width: auto;
+  margin: 0;
+}
+
+.topbuttons {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 520px) {
+  .headerrow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .logo {
+    font-size: 27px;
+  }
+
+  .card {
+    padding: 17px;
+    border-radius: 16px;
+  }
+
+  button {
+    max-width: 100%;
+  }
+}
+  
 </style></head>
 <body>
 <header><div class="headerrow"><div><div class="logo">Delphin <span>DM</span> 🌍</div><p>Un espace pour échanger entre humains et intelligence artificielle.</p></div>
