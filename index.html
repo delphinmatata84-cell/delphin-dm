@@ -226,21 +226,15 @@ button:active {
   scroll-behavior: smooth;
 }
 .msg {
+  display: block;
+  width: fit-content;
+  max-width: 78%;
   padding: 14px 16px;
   margin: 12px 0;
-  border-radius: 16px;
+  border-radius: 17px;
   line-height: 1.7;
   overflow-wrap: anywhere;
-  background: linear-gradient(
-    135deg,
-    rgba(13, 47, 68, 0.88),
-    rgba(7, 57, 43, 0.78)
-  );
-  border: 1px solid rgba(255, 215, 80, 0.28);
-  box-shadow:
-    0 5px 16px rgba(0, 0, 0, 0.20),
-    0 0 12px rgba(0, 170, 105, 0.08);
-  color: #ffffff;
+  box-sizing: border-box;
 }
 .user {
   background: linear-gradient(
