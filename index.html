@@ -419,6 +419,30 @@ function saveHistory(){if(historyEnabled)localStorage.setItem(HISTORY,document.g
 function restoreHistory(){const h=localStorage.getItem(HISTORY);if(h){document.getElementById('messages').innerHTML=h;document.getElementById('messages').scrollTop=document.getElementById('messages').scrollHeight;alert('Historique restauré.')}else alert('Aucun historique enregistré sur cet appareil.')}
 function clearHistory(){document.getElementById('messages').innerHTML='<div class="msg ai">🤖 Bonjour ! Comment puis-je t’aider ?</div>';localStorage.removeItem(HISTORY)}
 function effacer(){clearHistory()}
+function ouvrirPleinEcran() {
+  const panneau = document.getElementById('messages').closest('section.card');
+  if (!panneau) return;
+
+  panneau.classList.add('discussion-plein-ecran');
+
+  let retour = document.getElementById('retourPleinEcran');
+  if (!retour) {
+    retour = document.createElement('button');
+    retour.id = 'retourPleinEcran';
+    retour.textContent = '↩ Retour';
+    retour.type = 'button';
+    retour.onclick = fermerPleinEcran;
+    panneau.querySelector('h2').after(retour);
+  }
+}
+
+function fermerPleinEcran() {
+  const panneau = document.querySelector('section.card.discussion-plein-ecran');
+  if (panneau) panneau.classList.remove('discussion-plein-ecran');
+
+  const retour = document.getElementById('retourPleinEcran');
+  if (retour) retour.remove();
+}
 function nouvelleDiscussion(){
   saveHistory();
   document.getElementById('messages').innerHTML='';
