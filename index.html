@@ -354,6 +354,33 @@ section.card.discussion-plein-ecran > p.small {
   width: 100%;
   margin-bottom: 0;
 }
+main:has(section.discussion-plein-ecran) {
+  margin: 0;
+  padding: 0;
+  max-width: none;
+}
+
+section.card.discussion-plein-ecran {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  max-width: none;
+  margin: 0;
+  padding: 10px;
+  border-radius: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+section.card.discussion-plein-ecran #messages {
+  flex: 1 1 0;
+  min-height: 0;
+  height: auto;
+  margin-bottom: 0;
+}
 </style></head>
 <body>
 <header><div class="headerrow"><div><div class="logo">Delphin <span>DM</span> 🌍</div><p>Un espace pour échanger entre humains et intelligence artificielle.</p></div>
