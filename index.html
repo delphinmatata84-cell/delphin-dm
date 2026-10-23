@@ -349,6 +349,27 @@ footer {
     max-width: 100%;
   }
 }
+.discussion-plein-ecran {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  margin: 0;
+  padding: 12px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  background: #061521;
+  display: flex;
+  flex-direction: column;
+}
+
+.discussion-plein-ecran #messages {
+  flex: 1;
+  min-height: 180px;
+  height: auto;
+}
   
 </style></head>
 <body>
