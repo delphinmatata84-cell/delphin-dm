@@ -46,14 +46,29 @@ body.light {
 }
 
 header {
-  padding: 22px 16px;
+  padding: 26px 16px;
   background:
-    radial-gradient(ellipse at 85% 20%, rgba(15, 112, 75, 0.48), transparent 55%),
-    linear-gradient(120deg, #061521, #102e42 58%, #123b32);
-  border-bottom: 2px solid var(--gold);
+    radial-gradient(
+      ellipse at 85% 20%,
+      rgba(0, 210, 125, 0.48),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at 10% 0%,
+      rgba(25, 115, 210, 0.42),
+      transparent 55%
+    ),
+    linear-gradient(
+      120deg,
+      #020b18,
+      #0a2942 55%,
+      #063523
+    );
+  border-bottom: 2px solid #f5d34f;
   box-shadow:
-    0 5px 25px rgba(0, 0, 0, 0.3),
-    0 2px 18px rgba(245, 211, 79, 0.08);
+    0 8px 30px rgba(0, 0, 0, 0.4),
+    0 0 22px rgba(245, 211, 79, 0.25),
+    0 0 30px rgba(0, 190, 110, 0.15);
 }
 
 .headerrow {
