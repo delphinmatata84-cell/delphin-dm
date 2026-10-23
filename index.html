@@ -349,21 +349,39 @@ footer {
     max-width: 100%;
   }
 }
+
 .discussion-plein-ecran {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 99999;
   width: 100%;
-  height: 100%;
+  max-width: none;
+  height: 100vh;
   height: 100dvh;
   margin: 0;
-  padding: 12px;
+  padding: 10px;
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow: hidden;
   background: #061521;
   display: flex;
   flex-direction: column;
+  border-radius: 0;
+  gap: 8px;
 }
+
+section.card.discussion-plein-ecran #messages {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+}
+
+section.card.discussion-plein-ecran #question {
+  flex-shrink: 0;
+}
+
+section.card.discussion-plein-ecran > p.small {
+  display: none;
+} 
 
 .discussion-plein-ecran #messages {
   flex: 1;
