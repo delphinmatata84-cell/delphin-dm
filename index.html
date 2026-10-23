@@ -403,9 +403,7 @@ function effacer(){clearHistory()}
 function ouvrirPleinEcran() {
   const panneau = document.getElementById('messages').closest('section.card');
   if (!panneau) return;
-
   panneau.classList.add('discussion-plein-ecran');
-
   let retour = document.getElementById('retourPleinEcran');
   if (!retour) {
     retour = document.createElement('button');
@@ -416,7 +414,6 @@ function ouvrirPleinEcran() {
     panneau.querySelector('h2').after(retour);
   }
 }
-
 function fermerPleinEcran() {
   const panneau = document.querySelector('section.card.discussion-plein-ecran');
   if (panneau) panneau.classList.remove('discussion-plein-ecran');
@@ -478,7 +475,6 @@ if (resultatSauvegarde === false) {
       '🤖 Je ne peux pas contacter l’IA pour le moment. Réessaie dans quelques instants.';
   } finally {
     zone.scrollTop = zone.scrollHeight;
-
     if (typeof saveHistory === 'function') {
       saveHistory();
     }
