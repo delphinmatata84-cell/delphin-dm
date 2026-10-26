@@ -817,17 +817,24 @@ async function chargerMessagesPrives() {
     return;
   }
   zone.replaceChildren();
-  (data || []).forEach(message => {
-    const ligne = document.createElement('p');
-    ligne.textContent =
-      (message.sender_id === user.id ? 'Moi : ' : 'Lui/Elle : ') +
-      message.content;
-    ligne.style.padding = '8px';
-    ligne.style.borderRadius = '8px';
-    ligne.style.background =
-      message.sender_id === user.id ? '#dceeff' : '#eeeeee';
-    zone.appendChild(ligne);
-  });
+(data || []).forEach(message => {
+  const moi = message.sender_id === user.id;
+  const ligne = document.createElement('div');
+  ligne.style.display = 'flex';
+  ligne.style.justifyContent = moi ? 'flex-end' : 'flex-start';
+  ligne.style.margin = '8px 0';
+  const bulle = document.createElement('div');
+  bulle.textContent =
+    (moi ? 'Moi : ' : 'Lui/Elle : ') + message.content;
+  bulle.style.maxWidth = '80%';
+  bulle.style.padding = '10px 12px';
+  bulle.style.borderRadius = '12px';
+  bulle.style.overflowWrap = 'anywhere';
+  bulle.style.background = moi ? '#dceeff' : '#eeeeee';
+  bulle.style.color = '#222';
+  ligne.appendChild(bulle);
+  zone.appendChild(ligne);
+});
   zone.scrollTop = zone.scrollHeight;
   etat.textContent = data && data.length
     ? 'Messages chargés.'
