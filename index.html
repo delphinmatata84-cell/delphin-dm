@@ -709,10 +709,8 @@ data.forEach(profil => {
   bouton.textContent = '💬 Envoyer un message';
   bouton.style.marginLeft = '10px';
   bouton.addEventListener('click', () => {
-    alert('La messagerie privée avec ' +
-      (profil.display_name || 'cet utilisateur') +
-      ' sera configurée à l’étape suivante.');
-  });
+  ouvrirMessagerie(profil);
+});
   ligne.appendChild(nom);
   ligne.appendChild(document.createElement('br'));
   ligne.appendChild(bouton);
