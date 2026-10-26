@@ -697,12 +697,27 @@ async function chargerConversationsCloud() {
     return;
   }
   message.textContent = 'Utilisateurs inscrits :';
-
-  data.forEach(profil => {
-    const ligne = document.createElement('p');
-    ligne.textContent = '👤 ' + (profil.display_name || 'Utilisateur');
-    liste.appendChild(ligne);
+data.forEach(profil => {
+  const ligne = document.createElement('div');
+  ligne.style.margin = '10px 0';
+  ligne.style.padding = '10px';
+  ligne.style.borderRadius = '8px';
+  ligne.style.background = '#ffffff';
+  const nom = document.createElement('span');
+  nom.textContent = '👤 ' + (profil.display_name || 'Utilisateur');
+  const bouton = document.createElement('button');
+  bouton.textContent = '💬 Envoyer un message';
+  bouton.style.marginLeft = '10px';
+  bouton.addEventListener('click', () => {
+    alert('La messagerie privée avec ' +
+      (profil.display_name || 'cet utilisateur') +
+      ' sera configurée à l’étape suivante.');
   });
+  ligne.appendChild(nom);
+  ligne.appendChild(document.createElement('br'));
+  ligne.appendChild(bouton);
+  liste.appendChild(ligne);
+});
 }
 document.addEventListener('DOMContentLoaded', chargerAnnuaire);
 </script>
