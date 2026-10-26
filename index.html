@@ -672,6 +672,39 @@ async function chargerConversationsCloud() {
     }
   zone.scrollTop = zone.scrollHeight;
 }
+  async function chargerAnnuaire() {
+  const message = document.getElementById('annuaireMessage');
+  const liste = document.getElementById('listeUtilisateurs');
+  if (!message || !liste) return;
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) {
+    message.textContent = 'Connecte-toi pour consulter l’annuaire.';
+    return;
+  }
+  const { data, error } = await supabaseClient
+    .from('profiles')
+    .select('user_id, display_name')
+    .neq('user_id', user.id);
+  if (error) {
+    message.textContent = 'Impossible de charger les utilisateurs pour le moment.';
+    console.error(error);
+    return;
+  }
+  liste.replaceChildren();
+
+  if (!data || data.length === 0) {
+    message.textContent = 'Aucun autre utilisateur inscrit pour le moment.';
+    return;
+  }
+  message.textContent = 'Utilisateurs inscrits :';
+
+  data.forEach(profil => {
+    const ligne = document.createElement('p');
+    ligne.textContent = '👤 ' + (profil.display_name || 'Utilisateur');
+    liste.appendChild(ligne);
+  });
+}
+document.addEventListener('DOMContentLoaded', chargerAnnuaire);
 </script>
 <section id="annuaire" style="padding:15px; margin:15px 0; border-radius:12px; background:#f0f4f8; color:#222;">
   <h3>👥 Utilisateurs de Delphin DM</h3>
