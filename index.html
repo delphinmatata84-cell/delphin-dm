@@ -718,6 +718,121 @@ data.forEach(profil => {
 });
 }
 document.addEventListener('DOMContentLoaded', chargerAnnuaire);
+  let utilisateurPriveActuel = null;
+async function ouvrirMessagerie(profil) {
+  const { data: { user }, error: erreurConnexion } =
+    await supabaseClient.auth.getUser();
+  if (erreurConnexion || !user) {
+    alert('Connecte-toi pour envoyer un message.');
+    return;
+  }
+  utilisateurPriveActuel = profil;
+  let fenetre = document.getElementById('fenetrePrivee');
+  if (!fenetre) {
+    fenetre = document.createElement('section');
+    fenetre.id = 'fenetrePrivee';
+    fenetre.style.cssText =
+      'position:fixed;inset:10px;background:white;color:#222;' +
+      'z-index:9999;padding:16px;border-radius:12px;' +
+      'overflow:auto;box-shadow:0 0 0 100vmax #0008';
+    fenetre.innerHTML = `
+      <h3 id="titrePrive">💬 Discussion privée</h3>
+      <div id="messagesPrives"
+        style="height:55vh;overflow:auto;border:1px solid #ddd;padding:10px">
+      </div>
+      <form id="formPrive" style="display:flex;gap:8px;margin-top:10px">
+        <input id="textePrive" placeholder="Écris ton message..."
+          maxlength="3000" required style="flex:1;min-width:0;padding:10px">
+        <button type="submit">Envoyer</button>
+      </form>
+      <button id="fermerPrive" type="button"
+        style="margin-top:10px">Fermer</button>
+      <p id="etatPrive"></p>
+    `;
+    document.body.appendChild(fenetre);
+    document.getElementById('fermerPrive').onclick = () => {
+      fenetre.remove();
+      utilisateurPriveActuel = null;
+    };
+    document.getElementById('formPrive').onsubmit =
+      async function(e) {
+        e.preventDefault();
+        const destinataire = utilisateurPriveActuel;
+        const champ = document.getElementById('textePrive');
+        const contenu = champ.value.trim();
+        const etat = document.getElementById('etatPrive');
+        if (!contenu || !destinataire) return;
+        etat.textContent = 'Envoi en cours...';
+        const { data: { user: expediteur } } =
+          await supabaseClient.auth.getUser();
+
+        if (!expediteur) {
+          etat.textContent = 'Reconnecte-toi pour envoyer un message.';
+          return;
+        }
+        const { error } = await supabaseClient
+          .from('private_messages')
+          .insert({
+            sender_id: expediteur.id,
+            receiver_id: destinataire.user_id,
+            content: contenu
+          });
+        if (error) {
+          etat.textContent = 'Échec de l’envoi. Vérifie la connexion.';
+          console.error(error);
+          return;
+        }
+        champ.value = '';
+        etat.textContent = 'Message envoyé.';
+        await chargerMessagesPrives();
+      };
+  }
+  document.getElementById('titrePrive').textContent =
+    '💬 Discussion avec ' +
+    (profil.display_name || 'Utilisateur');
+
+  await chargerMessagesPrives();
+}
+async function chargerMessagesPrives() {
+  const zone = document.getElementById('messagesPrives');
+  const etat = document.getElementById('etatPrive');
+  const profil = utilisateurPriveActuel;
+  if (!zone || !profil) return;
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) {
+    etat.textContent = 'Connecte-toi pour lire les messages.';
+    return;
+  }
+  const { data, error } = await supabaseClient
+    .from('private_messages')
+    .select('sender_id, receiver_id, content, created_at')
+    .or(
+      `and(sender_id.eq.${user.id},receiver_id.eq.${profil.user_id}),` +
+      `and(sender_id.eq.${profil.user_id},receiver_id.eq.${user.id})`
+    )
+    .order('created_at', { ascending: true });
+  if (error) {
+    etat.textContent = 'Impossible de charger les messages.';
+    console.error(error);
+    return;
+  }
+  zone.replaceChildren();
+  (data || []).forEach(message => {
+    const ligne = document.createElement('p');
+    ligne.textContent =
+      (message.sender_id === user.id ? 'Moi : ' : 'Lui/Elle : ') +
+      message.content;
+    ligne.style.padding = '8px';
+    ligne.style.borderRadius = '8px';
+    ligne.style.background =
+      message.sender_id === user.id ? '#dceeff' : '#eeeeee';
+    zone.appendChild(ligne);
+  });
+  zone.scrollTop = zone.scrollHeight;
+  etat.textContent = data && data.length
+    ? 'Messages chargés.'
+    : 'Aucun message pour le moment.';
+      }
 </script>
 <section id="annuaire" style="padding:15px; margin:15px 0; border-radius:12px; background:#f0f4f8; color:#222;">
   <h3>👥 Utilisateurs de Delphin DM</h3>
