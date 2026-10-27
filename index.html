@@ -736,7 +736,13 @@ async function ouvrirMessagerie(profil) {
       'z-index:9999;padding:16px;border-radius:12px;' +
       'overflow:auto;box-shadow:0 0 0 100vmax #0008';
     fenetre.innerHTML = `
-      <h3 id="titrePrive">💬 Discussion privée</h3>
+   <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+  <h3 id="titrePrive">💬 Discussion privée</h3>
+  <div style="display:flex;gap:8px">
+    <button id="appelAudio" type="button">📞 Audio</button>
+    <button id="appelVideo" type="button">🎥 Vidéo</button>
+  </div>
+</div>
       <div id="messagesPrives"
         style="height:55vh;overflow:auto;border:1px solid #ddd;padding:10px">
       </div>
