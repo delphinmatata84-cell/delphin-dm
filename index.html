@@ -759,11 +759,30 @@ async function ouvrirMessagerie(profil) {
     document.body.appendChild(fenetre);
         const boutonAudio = document.getElementById('appelAudio');
     const boutonVideo = document.getElementById('appelVideo');
-    boutonAudio.onclick = () => {
-      alert('Appel audio : préparation de la connexion...');
+    boutonAudio.onclick = async () => {
+      try {
+        const flux = await navigator.mediaDevices.getUserMedia({
+          audio: true
+        });
+        flux.getTracks().forEach(piste => piste.stop());
+        alert('Microphone autorisé !');
+      } catch (erreur) {
+        alert('Accès au microphone refusé ou indisponible.');
+        console.error(erreur);
+      }
     };
-    boutonVideo.onclick = () => {
-      alert('Appel vidéo : préparation de la connexion...');
+    boutonVideo.onclick = async () => {
+      try {
+        const flux = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true
+        });
+        flux.getTracks().forEach(piste => piste.stop());
+        alert('Caméra et microphone autorisés !');
+      } catch (erreur) {
+        alert('Accès à la caméra ou au microphone refusé.');
+        console.error(erreur);
+      }
     };
     document.getElementById('fermerPrive').onclick = () => {
       fenetre.remove();
