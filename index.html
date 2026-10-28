@@ -757,6 +757,14 @@ async function ouvrirMessagerie(profil) {
       <p id="etatPrive"></p>
     `;
     document.body.appendChild(fenetre);
+        const boutonAudio = document.getElementById('appelAudio');
+    const boutonVideo = document.getElementById('appelVideo');
+    boutonAudio.onclick = () => {
+      alert('Appel audio : préparation de la connexion...');
+    };
+    boutonVideo.onclick = () => {
+      alert('Appel vidéo : préparation de la connexion...');
+    };
     document.getElementById('fermerPrive').onclick = () => {
       fenetre.remove();
       utilisateurPriveActuel = null;
@@ -772,7 +780,6 @@ async function ouvrirMessagerie(profil) {
         etat.textContent = 'Envoi en cours...';
         const { data: { user: expediteur } } =
           await supabaseClient.auth.getUser();
-
         if (!expediteur) {
           etat.textContent = 'Reconnecte-toi pour envoyer un message.';
           return;
