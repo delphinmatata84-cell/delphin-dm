@@ -757,33 +757,240 @@ async function ouvrirMessagerie(profil) {
       <p id="etatPrive"></p>
     `;
     document.body.appendChild(fenetre);
-        const boutonAudio = document.getElementById('appelAudio');
+    
+    const boutonAudio = document.getElementById('appelAudio');
     const boutonVideo = document.getElementById('appelVideo');
-    boutonAudio.onclick = async () => {
-      try {
-        const flux = await navigator.mediaDevices.getUserMedia({
-          audio: true
+
+    let connexionAppel = null;
+    let mediaAppel = null;
+    let canalAppel = null;
+    let identifiantAppel = null;
+    let appelVideoActif = false;
+    let signauxEnAttente = [];
+
+    const { data: { user: utilisateurAppel } } =
+      await supabaseClient.auth.getUser();
+
+    const zoneAppel = document.createElement('div');
+    zoneAppel.style.cssText =
+      'position:fixed;inset:0;z-index:99999;background:#101827;color:white;' +
+      'display:none;flex-direction:column;align-items:center;' +
+      'justify-content:center;gap:12px;padding:20px;';
+
+    zoneAppel.innerHTML = `
+      <h2 id="titreAppel">Appel Delphin DM</h2>
+      <video id="videoDistant" autoplay playsinline
+        style="width:100%;max-width:360px;border-radius:12px;background:#222"></video>
+      <video id="videoLocal" autoplay muted playsinline
+        style="width:120px;border-radius:10px;background:#222"></video>
+      <audio id="audioDistant" autoplay></audio>
+      <p id="etatAppel">Préparation de l’appel…</p>
+      <button id="raccrocherAppel"
+        style="padding:12px 22px;background:#dc2626;color:white;border:0;border-radius:12px">
+        🔴 Raccrocher
+      </button>
+    `;
+
+    document.body.appendChild(zoneAppel);
+
+    const envoyerSignal = async (type, donnees = {}) => {
+      const { error } = await supabaseClient
+        .from('call_signals')
+        .insert({
+          call_id: identifiantAppel,
+          sender_id: utilisateurAppel.id,
+          receiver_id: utilisateurPriveActuel.user_id,
+          signal_type: type,
+          signal_data: donnees
         });
-        flux.getTracks().forEach(piste => piste.stop());
-        alert('Microphone autorisé !');
-      } catch (erreur) {
-        alert('Accès au microphone refusé ou indisponible.');
-        console.error(erreur);
-      }
+
+      if (error) throw error;
     };
-    boutonVideo.onclick = async () => {
+
+    const fermerAppel = async (notifier = true) => {
+      if (notifier && identifiantAppel && utilisateurAppel) {
+        try {
+          await envoyerSignal('hangup');
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      if (canalAppel) {
+        await supabaseClient.removeChannel(canalAppel);
+        canalAppel = null;
+      }
+
+      if (connexionAppel) {
+        connexionAppel.close();
+        connexionAppel = null;
+      }
+
+      if (mediaAppel) {
+        mediaAppel.getTracks().forEach(piste => piste.stop());
+        mediaAppel = null;
+      }
+
+      document.getElementById('videoLocal').srcObject = null;
+      document.getElementById('videoDistant').srcObject = null;
+      document.getElementById('audioDistant').srcObject = null;
+
+      identifiantAppel = null;
+      signauxEnAttente = [];
+      zoneAppel.style.display = 'none';
+      boutonAudio.disabled = false;
+      boutonVideo.disabled = false;
+    };
+
+    const demarrerAppel = async (avecVideo) => {
+      if (!utilisateurAppel) {
+        alert('Connecte-toi avant de passer un appel.');
+        return;
+      }
+
+      if (!utilisateurPriveActuel ||
+          utilisateurPriveActuel.user_id === utilisateurAppel.id) {
+        alert('Destinataire de l’appel introuvable.');
+        return;
+      }
+
+      if (canalAppel) {
+        alert('Un appel est déjà en cours.');
+        return;
+      }
+
+      appelVideoActif = avecVideo;
+      identifiantAppel = crypto.randomUUID();
+      signauxEnAttente = [];
+      zoneAppel.style.display = 'flex';
+      document.getElementById('titreAppel').textContent =
+        avecVideo ? '🎥 Appel vidéo' : '📞 Appel audio';
+      document.getElementById('etatAppel').textContent =
+        'Activation du microphone…';
+
+      boutonAudio.disabled = true;
+      boutonVideo.disabled = true;
+
       try {
-        const flux = await navigator.mediaDevices.getUserMedia({
+        mediaAppel = await navigator.mediaDevices.getUserMedia({
           audio: true,
-          video: true
+          video: avecVideo
         });
-        flux.getTracks().forEach(piste => piste.stop());
-        alert('Caméra et microphone autorisés !');
+
+        document.getElementById('videoLocal').srcObject =
+          avecVideo ? mediaAppel : null;
+
+        document.getElementById('videoLocal').style.display =
+          avecVideo ? 'block' : 'none';
+
+        connexionAppel = new RTCPeerConnection({
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' }
+          ]
+        });
+
+        mediaAppel.getTracks().forEach(piste =>
+          connexionAppel.addTrack(piste, mediaAppel)
+        );
+
+        connexionAppel.ontrack = evenement => {
+          const fluxDistant = evenement.streams[0];
+          if (fluxDistant) {
+            document.getElementById('videoDistant').srcObject =
+              appelVideoActif ? fluxDistant : null;
+            document.getElementById('audioDistant').srcObject =
+              fluxDistant;
+          }
+        };
+
+        connexionAppel.onicecandidate = evenement => {
+          if (evenement.candidate) {
+            envoyerSignal('ice', {
+              candidate: evenement.candidate.toJSON()
+            }).catch(console.error);
+          }
+        };
+
+        canalAppel = supabaseClient
+          .channel('appel-' + identifiantAppel)
+          .on('postgres_changes', {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'call_signals'
+          }, async evenement => {
+            const signal = evenement.new;
+
+            if (signal.call_id !== identifiantAppel ||
+                signal.sender_id === utilisateurAppel.id) return;
+
+            try {
+              if (signal.signal_type === 'answer') {
+                await connexionAppel.setRemoteDescription(
+                  signal.signal_data.description
+                );
+
+                for (const candidate of signauxEnAttente) {
+                  await connexionAppel.addIceCandidate(candidate);
+                }
+                signauxEnAttente = [];
+
+                document.getElementById('etatAppel').textContent =
+                  'Appel connecté.';
+              }
+
+              if (signal.signal_type === 'ice' &&
+                  signal.signal_data.candidate) {
+                const candidate = new RTCIceCandidate(
+                  signal.signal_data.candidate
+                );
+
+                if (connexionAppel.remoteDescription) {
+                  await connexionAppel.addIceCandidate(candidate);
+                } else {
+                  signauxEnAttente.push(candidate);
+                }
+              }
+
+              if (signal.signal_type === 'hangup') {
+                alert('L’autre utilisateur a terminé l’appel.');
+                await fermerAppel(false);
+              }
+            } catch (erreur) {
+              console.error('Erreur pendant l’appel :', erreur);
+            }
+          })
+          .subscribe(async statut => {
+            if (statut !== 'SUBSCRIBED') return;
+
+            try {
+              const offre = await connexionAppel.createOffer();
+              await connexionAppel.setLocalDescription(offre);
+
+              await envoyerSignal('offer', {
+                description: connexionAppel.localDescription
+              });
+
+              document.getElementById('etatAppel').textContent =
+                'Appel envoyé. En attente de réponse…';
+            } catch (erreur) {
+              console.error(erreur);
+              document.getElementById('etatAppel').textContent =
+                'Impossible de démarrer l’appel.';
+            }
+          });
       } catch (erreur) {
-        alert('Accès à la caméra ou au microphone refusé.');
         console.error(erreur);
+        alert('Impossible de démarrer l’appel. Vérifie les permissions du micro et de la caméra.');
+        await fermerAppel(false);
       }
     };
+
+    boutonAudio.onclick = () => demarrerAppel(false);
+    boutonVideo.onclick = () => demarrerAppel(true);
+
+    document.getElementById('raccrocherAppel').onclick =
+      () => fermerAppel(true);
+    
     document.getElementById('fermerPrive').onclick = () => {
       fenetre.remove();
       utilisateurPriveActuel = null;
