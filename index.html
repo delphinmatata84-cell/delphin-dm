@@ -457,6 +457,26 @@ function nouvelleDiscussion(){
 }
 function bienvenue(){const n=document.getElementById('nom').value.trim();document.getElementById('salut').textContent=n?'Bienvenue, '+n+' !':'Bienvenue dans Delphin DM !';if(n){document.getElementById('displayName').value=n;savePreference('name',n)}}
 function showAbout(){alert('Delphin DM 🌍\nUn espace pour échanger entre humains et intelligence artificielle.\nVersion de démonstration 1.1.')}
+// 🔊 VOIX FÉMININE DE DELPHIN DM
+function lireReponseIA(texte) {
+  if (!('speechSynthesis' in window)) {
+    console.log('Lecture vocale non disponible.');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const parole = new SpeechSynthesisUtterance(texte);
+  parole.lang = 'fr-FR';
+  parole.rate = 0.95;
+  parole.pitch = 1.15;
+  const voix = window.speechSynthesis.getVoices();
+  const voixFeminine = voix.find(v =>
+    /female|woman|femme|amélie|amelie|audrey|google français/i.test(v.name)
+  ) || voix.find(v => v.lang.toLowerCase().startsWith('fr'));
+  if (voixFeminine) {
+    parole.voice = voixFeminine;
+  }
+  window.speechSynthesis.speak(parole);
+}
 async function envoyer() {
   const q = document.getElementById('question');
   const t = q.value.trim();
