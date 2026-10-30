@@ -482,6 +482,26 @@ function lireReponseIA(texte) {
   }
   window.speechSynthesis.speak(parole);
 }
+// 🎙️ Dicter une question à l'IA
+function demarrerDictee() {
+  const Reconnaissance = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!Reconnaissance) {
+    alert("La reconnaissance vocale n'est pas disponible. Essaie avec Google Chrome.");
+    return;
+  }
+  const micro = new Reconnaissance();
+  micro.lang = 'fr-FR';
+  micro.continuous = false;
+  micro.interimResults = false;
+  micro.onresult = function(event) {
+    const texte = event.results[0][0].transcript;
+    document.getElementById('question').value = texte;
+  };
+  micro.onerror = function() {
+    alert("Le micro n'a pas fonctionné. Vérifie son autorisation.");
+  };
+  micro.start();
+}
 async function envoyer() {
   const q = document.getElementById('question');
   const t = q.value.trim();
