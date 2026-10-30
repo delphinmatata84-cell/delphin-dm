@@ -512,6 +512,7 @@ async function envoyer() {
     }
     a.textContent =
       '🤖 ' + (donnees.answer || 'Aucune réponse reçue.');
+    lireReponseIA(donnees.answer || 'Aucune réponse reçue.');
 const resultatSauvegarde = await sauvegarderEchange(
   t,
   donnees.answer || 'Aucune réponse reçue.'
