@@ -737,7 +737,6 @@ async function ouvrirMessagerie(profil) {
       'overflow:auto;box-shadow:0 0 0 100vmax #0008';
     fenetre.innerHTML = `
    <h3 id="titrePrive">💬 Discussion privée</h3>
-  
       <div id="messagesPrives"
         style="height:55vh;overflow:auto;border:1px solid #ddd;padding:10px">
       </div>
@@ -746,37 +745,30 @@ async function ouvrirMessagerie(profil) {
           maxlength="3000" required style="flex:1;min-width:0;padding:10px">
         <button type="submit">Envoyer</button>
       </form>
-      
 <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px;padding:12px;background:rgba(10,20,35,0.85);border:1px solid rgba(255,255,255,0.15);border-radius:18px">
   <button id="appelAudio" type="button" style="background:#16a34a;color:white;border:0;border-radius:14px;padding:12px 20px;font-weight:bold;box-shadow:0 4px 12px #0005">📞 Appel audio</button>
   <button id="appelVideo" type="button" style="background:#2563eb;color:white;border:0;border-radius:14px;padding:12px 20px;font-weight:bold;box-shadow:0 4px 12px #0005">🎥 Appel vidéo</button>
 </div>
-
       <button id="fermerPrive" type="button"
         style="margin-top:10px">Fermer</button>
       <p id="etatPrive"></p>
     `;
-    document.body.appendChild(fenetre);
-    
+    document.body.appendChild(fenetre);   
     const boutonAudio = document.getElementById('appelAudio');
     const boutonVideo = document.getElementById('appelVideo');
-
     let connexionAppel = null;
     let mediaAppel = null;
     let canalAppel = null;
     let identifiantAppel = null;
     let appelVideoActif = false;
     let signauxEnAttente = [];
-
     const { data: { user: utilisateurAppel } } =
       await supabaseClient.auth.getUser();
-
     const zoneAppel = document.createElement('div');
     zoneAppel.style.cssText =
       'position:fixed;inset:0;z-index:99999;background:#101827;color:white;' +
       'display:none;flex-direction:column;align-items:center;' +
       'justify-content:center;gap:12px;padding:20px;';
-
     zoneAppel.innerHTML = `
       <h2 id="titreAppel">Appel Delphin DM</h2>
       <video id="videoDistant" autoplay playsinline
@@ -790,9 +782,7 @@ async function ouvrirMessagerie(profil) {
         🔴 Raccrocher
       </button>
     `;
-
     document.body.appendChild(zoneAppel);
-
     const envoyerSignal = async (type, donnees = {}) => {
       const { error } = await supabaseClient
         .from('call_signals')
@@ -803,10 +793,8 @@ async function ouvrirMessagerie(profil) {
           signal_type: type,
           signal_data: donnees
         });
-
       if (error) throw error;
     };
-
     const fermerAppel = async (notifier = true) => {
       if (notifier && identifiantAppel && utilisateurAppel) {
         try {
@@ -815,50 +803,41 @@ async function ouvrirMessagerie(profil) {
           console.error(e);
         }
       }
-
       if (canalAppel) {
         await supabaseClient.removeChannel(canalAppel);
         canalAppel = null;
       }
-
       if (connexionAppel) {
         connexionAppel.close();
         connexionAppel = null;
       }
-
       if (mediaAppel) {
         mediaAppel.getTracks().forEach(piste => piste.stop());
         mediaAppel = null;
       }
-
       document.getElementById('videoLocal').srcObject = null;
       document.getElementById('videoDistant').srcObject = null;
       document.getElementById('audioDistant').srcObject = null;
-
       identifiantAppel = null;
       signauxEnAttente = [];
       zoneAppel.style.display = 'none';
       boutonAudio.disabled = false;
       boutonVideo.disabled = false;
     };
-
     const demarrerAppel = async (avecVideo) => {
       if (!utilisateurAppel) {
         alert('Connecte-toi avant de passer un appel.');
         return;
       }
-
       if (!utilisateurPriveActuel ||
           utilisateurPriveActuel.user_id === utilisateurAppel.id) {
         alert('Destinataire de l’appel introuvable.');
         return;
       }
-
       if (canalAppel) {
         alert('Un appel est déjà en cours.');
         return;
       }
-
       appelVideoActif = avecVideo;
       identifiantAppel = crypto.randomUUID();
       signauxEnAttente = [];
@@ -867,32 +846,25 @@ async function ouvrirMessagerie(profil) {
         avecVideo ? '🎥 Appel vidéo' : '📞 Appel audio';
       document.getElementById('etatAppel').textContent =
         'Activation du microphone…';
-
       boutonAudio.disabled = true;
       boutonVideo.disabled = true;
-
       try {
         mediaAppel = await navigator.mediaDevices.getUserMedia({
           audio: true,
           video: avecVideo
         });
-
         document.getElementById('videoLocal').srcObject =
           avecVideo ? mediaAppel : null;
-
         document.getElementById('videoLocal').style.display =
           avecVideo ? 'block' : 'none';
-
         connexionAppel = new RTCPeerConnection({
           iceServers: [
             { urls: 'stun:stun.l.google.com:19302' }
           ]
         });
-
         mediaAppel.getTracks().forEach(piste =>
           connexionAppel.addTrack(piste, mediaAppel)
         );
-
         connexionAppel.ontrack = evenement => {
           const fluxDistant = evenement.streams[0];
           if (fluxDistant) {
@@ -902,7 +874,6 @@ async function ouvrirMessagerie(profil) {
               fluxDistant;
           }
         };
-
         connexionAppel.onicecandidate = evenement => {
           if (evenement.candidate) {
             envoyerSignal('ice', {
@@ -910,7 +881,6 @@ async function ouvrirMessagerie(profil) {
             }).catch(console.error);
           }
         };
-
         canalAppel = supabaseClient
           .channel('appel-' + identifiantAppel)
           .on('postgres_changes', {
@@ -919,38 +889,31 @@ async function ouvrirMessagerie(profil) {
             table: 'call_signals'
           }, async evenement => {
             const signal = evenement.new;
-
             if (signal.call_id !== identifiantAppel ||
                 signal.sender_id === utilisateurAppel.id) return;
-
             try {
               if (signal.signal_type === 'answer') {
                 await connexionAppel.setRemoteDescription(
                   signal.signal_data.description
                 );
-
                 for (const candidate of signauxEnAttente) {
                   await connexionAppel.addIceCandidate(candidate);
                 }
                 signauxEnAttente = [];
-
                 document.getElementById('etatAppel').textContent =
                   'Appel connecté.';
               }
-
               if (signal.signal_type === 'ice' &&
                   signal.signal_data.candidate) {
                 const candidate = new RTCIceCandidate(
                   signal.signal_data.candidate
                 );
-
                 if (connexionAppel.remoteDescription) {
                   await connexionAppel.addIceCandidate(candidate);
                 } else {
                   signauxEnAttente.push(candidate);
                 }
               }
-
               if (signal.signal_type === 'hangup') {
                 alert('L’autre utilisateur a terminé l’appel.');
                 await fermerAppel(false);
@@ -961,15 +924,12 @@ async function ouvrirMessagerie(profil) {
           })
           .subscribe(async statut => {
             if (statut !== 'SUBSCRIBED') return;
-
             try {
               const offre = await connexionAppel.createOffer();
               await connexionAppel.setLocalDescription(offre);
-
               await envoyerSignal('offer', {
                 description: connexionAppel.localDescription
               });
-
               document.getElementById('etatAppel').textContent =
                 'Appel envoyé. En attente de réponse…';
             } catch (erreur) {
@@ -984,13 +944,146 @@ async function ouvrirMessagerie(profil) {
         await fermerAppel(false);
       }
     };
-
     boutonAudio.onclick = () => demarrerAppel(false);
     boutonVideo.onclick = () => demarrerAppel(true);
 
     document.getElementById('raccrocherAppel').onclick =
       () => fermerAppel(true);
-    
+    // 📲 RÉCEPTION DES APPELS ENTRANTS
+let canalReceptionAppels = null;
+canalReceptionAppels = supabaseClient
+  .channel('appels-entrants-' + utilisateurAppel.id)
+  .on(
+    'postgres_changes',
+    {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'call_signals'
+    },
+    async evenement => {
+      const signal = evenement.new;
+      // Vérifier que l'appel nous est destiné
+      if (
+        signal.receiver_id !== utilisateurAppel.id ||
+        signal.sender_id !== utilisateurPriveActuel.user_id ||
+        signal.signal_type !== 'offer'
+      ) return;
+      if (canalAppel) return;
+      const accepter = confirm(
+        '📞 ' + (utilisateurPriveActuel.display_name || 'Un utilisateur') +
+        ' vous appelle. Voulez-vous répondre ?'
+      );
+      if (!accepter) return;
+      try {
+        identifiantAppel = signal.call_id;
+        appelVideoActif =
+          signal.signal_data.description.sdp.includes('m=video');
+        zoneAppel.style.display = 'flex';
+        document.getElementById('titreAppel').textContent =
+          appelVideoActif ? '🎥 Appel vidéo entrant' : '📞 Appel audio entrant';
+        document.getElementById('etatAppel').textContent =
+          'Connexion en cours…';
+        mediaAppel = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: appelVideoActif
+        });
+        document.getElementById('videoLocal').srcObject =
+          appelVideoActif ? mediaAppel : null;
+        document.getElementById('videoLocal').style.display =
+          appelVideoActif ? 'block' : 'none';
+        connexionAppel = new RTCPeerConnection({
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' }
+          ]
+        });
+        mediaAppel.getTracks().forEach(piste => {
+          connexionAppel.addTrack(piste, mediaAppel);
+        });
+        connexionAppel.ontrack = evenement => {
+          const flux = evenement.streams[0];
+          if (flux) {
+            document.getElementById('videoDistant').srcObject =
+              appelVideoActif ? flux : null;
+            document.getElementById('audioDistant').srcObject = flux;
+          }
+        };
+        connexionAppel.onicecandidate = evenement => {
+          if (evenement.candidate) {
+            envoyerSignal('ice', {
+              candidate: evenement.candidate.toJSON()
+            }).catch(console.error);
+          }
+        };
+        canalAppel = supabaseClient
+          .channel('appel-' + identifiantAppel)
+          .on(
+            'postgres_changes',
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table: 'call_signals'
+            },
+            async evenementSignal => {
+              const nouveauSignal = evenementSignal.new;
+              if (
+                nouveauSignal.call_id !== identifiantAppel ||
+                nouveauSignal.sender_id === utilisateurAppel.id
+              ) return;
+              try {
+                if (
+                  nouveauSignal.signal_type === 'ice' &&
+                  nouveauSignal.signal_data.candidate
+                ) {
+                  const candidat = new RTCIceCandidate(
+                    nouveauSignal.signal_data.candidate
+                  );
+                  if (connexionAppel.remoteDescription) {
+                    await connexionAppel.addIceCandidate(candidat);
+                  } else {
+                    signauxEnAttente.push(candidat);
+                  }
+                }
+                if (nouveauSignal.signal_type === 'hangup') {
+                  alert('L’autre utilisateur a terminé l’appel.');
+                  await fermerAppel(false);
+                }
+              } catch (erreur) {
+                console.error(erreur);
+              }
+            }
+          )
+          .subscribe(async statut => {
+            if (statut !== 'SUBSCRIBED') return;
+
+            try {
+              await connexionAppel.setRemoteDescription(
+                signal.signal_data.description
+              );
+              for (const candidat of signauxEnAttente) {
+                await connexionAppel.addIceCandidate(candidat);
+              }
+              signauxEnAttente = [];
+              const reponse = await connexionAppel.createAnswer();
+              await connexionAppel.setLocalDescription(reponse);
+              await envoyerSignal('answer', {
+                description: connexionAppel.localDescription
+              });
+              document.getElementById('etatAppel').textContent =
+                'Appel connecté.';
+            } catch (erreur) {
+              console.error(erreur);
+              document.getElementById('etatAppel').textContent =
+                'Erreur de connexion.';
+            }
+          });
+      } catch (erreur) {
+        console.error(erreur);
+        alert('Impossible de répondre. Vérifie les autorisations du microphone et de la caméra.');
+        await fermerAppel(false);
+      }
+    }
+  )
+  .subscribe();
     document.getElementById('fermerPrive').onclick = () => {
       fenetre.remove();
       utilisateurPriveActuel = null;
@@ -1030,7 +1123,6 @@ async function ouvrirMessagerie(profil) {
   document.getElementById('titrePrive').textContent =
     '💬 Discussion avec ' +
     (profil.display_name || 'Utilisateur');
-
   await chargerMessagesPrives();
 }
 async function chargerMessagesPrives() {
