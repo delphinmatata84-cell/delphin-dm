@@ -411,7 +411,15 @@ section.card.discussion-plein-ecran #messages {
 <textarea id="question" rows="3" placeholder="Écris ton message ici..."></textarea><button onclick="envoyer()">Envoyer</button><button class="secondary" onclick="effacer()">Effacer la discussion</button><p class="small">Version de démonstration : les réponses sont simulées. Une véritable IA devra être connectée plus tard.</p></section>
   <button type="button" onclick="demarrerDictee()">🎙️ Parler à l’IA</button>
 <label>
-  📷 Envoyer une photo
+<label>
+  🖼️ Choisir dans la galerie
+  <input type="file" accept="image/*" onchange="envoyerPhotoIA(event)">
+</label>
+
+<label>
+  📸 Prendre une photo
+  <input type="file" accept="image/*" capture="environment" onchange="envoyerPhotoIA(event)">
+</label>
   <input type="file" id="photoIA" accept="image/*" style="display:none" onchange="envoyerPhotoIA(event)">
 </label>
   <button onclick="nouvelleDiscussion()">➕ Nouvelle discussion</button>
