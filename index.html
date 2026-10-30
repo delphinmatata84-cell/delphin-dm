@@ -512,7 +512,10 @@ async function envoyer() {
     }
     a.textContent =
       '🤖 ' + (donnees.answer || 'Aucune réponse reçue.');
-    lireReponseIA(donnees.answer || 'Aucune réponse reçue.');
+    const boutonVoix = document.createElement('button');
+boutonVoix.textContent = '🔊 Écouter la réponse';
+boutonVoix.onclick = () => lireReponseIA(donnees.answer || 'Aucune réponse reçue.');
+zone.appendChild(boutonVoix);
 const resultatSauvegarde = await sauvegarderEchange(
   t,
   donnees.answer || 'Aucune réponse reçue.'
