@@ -415,7 +415,6 @@ section.card.discussion-plein-ecran #messages {
   🖼️ Choisir dans la galerie
   <input type="file" accept="image/*" onchange="envoyerPhotoIA(event)">
 </label>
-
 <label>
   📸 Prendre une photo
   <input type="file" accept="image/*" capture="environment" onchange="envoyerPhotoIA(event)">
@@ -491,6 +490,30 @@ function lireReponseIA(texte) {
   window.speechSynthesis.speak(parole);
 }
 // 🎙️ Dicter une question à l'IA
+// 🖼️ Afficher l'image choisie
+function envoyerPhotoIA(event) {
+  const fichier = event.target.files[0];
+  if (!fichier) return;
+  if (!fichier.type.startsWith('image/')) {
+    alert('Choisis une image valide.');
+    return;
+  }
+  const zone = document.getElementById('messages');
+  const bloc = document.createElement('div');
+  bloc.className = 'msg user';
+  const image = document.createElement('img');
+  const url = URL.createObjectURL(fichier);
+  image.alt = 'Photo choisie';
+  image.style.maxWidth = '220px';
+  image.style.maxHeight = '300px';
+  image.style.objectFit = 'contain';
+  image.style.borderRadius = '12px';
+  image.src = url;
+  bloc.appendChild(image);
+  zone.appendChild(bloc);
+  zone.scrollTop = zone.scrollHeight;
+  event.target.value = '';
+}
 function demarrerDictee() {
   const Reconnaissance = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!Reconnaissance) {
