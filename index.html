@@ -1273,12 +1273,29 @@ function choisirCreation(type) {
   const zone = document.getElementById("creationForm");
   const titres = {
     image: "Décris l’image que tu souhaites créer.",
-    document: "Décris le document Word ou PDF souhaité.",
+    document: "Quel document Word ou PDF souhaites-tu préparer ?",
     evenement: "Décris ton affiche ou ton invitation.",
     autre: "Décris ce que tu souhaites réaliser."
   };
+  zone.innerHTML = `
+    <p>${titres[type] || titres.autre}</p>
+    <textarea id="creationPrompt" rows="4"
+      placeholder="Écris ta demande ici..."></textarea>
+    <button type="button" onclick="envoyerCreation()">
+      Envoyer à l’IA
+    </button>
+  `;
+}
+function envoyerCreation() {
+  const champ = document.getElementById("creationPrompt");
+  const question = document.getElementById("question");
 
-  zone.textContent = titres[type] || "Décris ta création.";
+  if (!champ || !champ.value.trim()) {
+    alert("Décris d'abord ta création.");
+    return;
+  }
+  question.value = "Aide-moi à réaliser cette création : " + champ.value.trim();
+  envoyer();
 }
 </script>
 <section id="annuaire" style="padding:15px; margin:15px 0; border-radius:12px; background:#f0f4f8; color:#222;">
