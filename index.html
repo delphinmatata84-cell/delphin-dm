@@ -403,6 +403,16 @@ section.card.discussion-plein-ecran #messages {
 <div class="settingrow"><label>Confidentialité et informations</label><p class="small">Cette démonstration enregistre les préférences et, si activé, l'historique dans le navigateur de cet appareil. Les données ne sont pas synchronisées entre appareils. N'y saisis pas d'informations secrètes.</p><button class="ghost" onclick="showAbout()">À propos de Delphin DM</button></div>
 <div class="settingrow"><label>Aide</label><p class="small">Les réponses du chat sont encore simulées. Une connexion sécurisée à un service d'IA est nécessaire pour obtenir de vraies réponses.</p></div>
 <button onclick="toggleSettings()">Fermer les paramètres</button></section>
+<section id="creationsPanel" class="card" style="display:none;">
+<h2>🎨 Espace Créations</h2>
+<p>Que souhaites-tu créer avec Delphin DM ?</p>
+<button onclick="choisirCreation('image')">🖼️ Créer une image</button>
+<button onclick="choisirCreation('document')">📄 Créer un document Word ou PDF</button>
+<button onclick="choisirCreation('evenement')">🎉 Créer une affiche ou invitation</button>
+<button onclick="choisirCreation('autre')">✍️ Autres créations</button>
+<div id="creationForm"></div>
+<button class="secondary" onclick="toggleCreations()">Fermer</button>
+</section>
 <section class="card"><h2>Bienvenue sur Delphin DM 👋</h2><p>Discute, pose tes questions et découvre les possibilités de l'intelligence artificielle.</p><input id="nom" placeholder="Ton prénom (facultatif)">
 <button onclick="connexionGoogle()">🔐 Se connecter avec Google</button>
   <p id="compteGoogle" class="small"></p>
