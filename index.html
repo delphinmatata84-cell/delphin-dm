@@ -1313,7 +1313,6 @@ function choisirCreation(type) {
 function envoyerCreation() {
   const champ = document.getElementById("creationPrompt");
   const question = document.getElementById("question");
-
   if (!champ || !champ.value.trim()) {
     alert("Décris d'abord ta création.");
     return;
@@ -1327,5 +1326,69 @@ function envoyerCreation() {
   <p id="annuaireMessage">Chargement des utilisateurs...</p>
   <div id="listeUtilisateurs"></div>
 </section>
+<style>
+#verrouGoogle {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 20%, #064e32 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, #087443 0%, transparent 35%),
+    #050907;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+#verrouGoogle .carte {
+  width: 100%;
+  max-width: 380px;
+  padding: 35px 25px;
+  text-align: center;
+  border: 1px solid #20c77a66;
+  border-radius: 24px;
+  background: #10251dcc;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 0 35px #00ff8840;
+}
+#verrouGoogle h1 { color: #36e58b; }
+#verrouGoogle p { color: #c5d8ce; }
+#verrouGoogle button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  border: 0;
+  border-radius: 12px;
+  background: #18b96b;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+</style>
+<div id="verrouGoogle">
+  <div class="carte">
+    <h1>Delphin DM</h1>
+    <p>Bienvenue dans votre espace intelligent.</p>
+    <p>Connectez-vous avec Google pour continuer.</p>
+    <button onclick="connexionGoogle()">
+      🔐 Se connecter avec Google
+    </button>
+  </div>
+</div>
+<script>
+async function verifierAccesGoogle() {
+  const { data } = await supabaseClient.auth.getSession();
+  const verrou = document.getElementById('verrouGoogle');
+  if (!verrou) return;
+  verrou.style.display =
+    data.session ? 'none' : 'flex';
+}
+verifierAccesGoogle();
+supabaseClient.auth.onAuthStateChange(() => {
+  verifierAccesGoogle();
+});
+</script>
 </body>
 </html>
