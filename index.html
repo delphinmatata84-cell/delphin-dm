@@ -1421,5 +1421,21 @@ supabaseClient.auth.onAuthStateChange(() => {
     </button>
   </div>
 </div>
+<script>
+async function actualiserVerrouGoogle() {
+  const verrou = document.getElementById('verrouGoogle');
+  const { data, error } = await supabaseClient.auth.getSession();
+  if (!verrou) return;
+  verrou.style.display =
+    (!error && data.session) ? 'none' : 'flex';
+}
+actualiserVerrouGoogle();
+supabaseClient.auth.onAuthStateChange((_event, session) => {
+  const verrou = document.getElementById('verrouGoogle');
+  if (verrou) {
+    verrou.style.display = session ? 'none' : 'flex';
+  }
+});
+</script>
 </body>
 </html>
