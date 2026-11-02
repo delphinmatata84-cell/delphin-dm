@@ -573,12 +573,39 @@ async function envoyer() {
       }
     );
     const donnees = await reponse.json();
-
     if (!reponse.ok || donnees.error) {
       throw new Error('Erreur du service IA');
     }
     a.textContent =
       '🤖 ' + (donnees.answer || 'Aucune réponse reçue.');
+if (/document|word|lettre|cv|curriculum|rapport|contrat/i.test(t)) {
+  const boutonWord = document.createElement('button');
+  boutonWord.textContent = '⬇️ Télécharger le document Word';
+  boutonWord.onclick = () => {
+    const contenu = donnees.answer || '';
+    const texteSecurise = contenu
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    const fichier = `
+      <html>
+      <head><meta charset="UTF-8"></head>
+      <body style="font-family:Arial; font-size:12pt; line-height:1.6;">
+        <h2 style="text-align:center;">Document</h2>
+        <div style="white-space:pre-wrap;">${texteSecurise}</div>
+      </body>
+      </html>`;
+    const blob = new Blob([fichier], {
+      type: 'application/msword'
+    });
+    const lien = document.createElement('a');
+    lien.href = URL.createObjectURL(blob);
+    lien.download = 'Document_Delphin_DM.doc';
+    lien.click();
+    URL.revokeObjectURL(lien.href);
+  };
+  zone.appendChild(boutonWord);
+}
     const boutonVoix = document.createElement('button');
 boutonVoix.textContent = '🔊 Écouter la réponse';
 boutonVoix.onclick = () => lireReponseIA(donnees.answer || 'Aucune réponse reçue.');
