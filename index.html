@@ -1390,5 +1390,36 @@ supabaseClient.auth.onAuthStateChange(() => {
   verifierAccesGoogle();
 });
 </script>
+<div id="verrouGoogle" style="
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#050907;
+  color:white;
+  text-align:center;
+  font-family:Arial;
+">
+  <div style="
+    padding:30px;
+    border:1px solid #18b96b;
+    border-radius:20px;
+    background:#10251d;
+  ">
+    <h1 style="color:#36e58b;">Delphin DM</h1>
+    <p>Connectez-vous pour accéder à votre espace.</p>
+    <button onclick="connexionGoogle()" style="
+      padding:14px;
+      background:#18b96b;
+      color:white;
+      border:0;
+      border-radius:10px;
+    ">
+      🔐 Se connecter avec Google
+    </button>
+  </div>
+</div>
 </body>
 </html>
