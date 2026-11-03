@@ -439,7 +439,13 @@ section.card.discussion-plein-ecran #messages {
 <script>
 const SUPABASE_URL = 'https://sgivishjmmhwdrnasgmy.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_ZQtZIBfGxf0bRneW6JbI2g_ouFmab2b';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
+});
 const PREFS='delphinDM_preferences_v1',HISTORY='delphinDM_history_v1';let historyEnabled=false;
 function readPrefs(){try{return JSON.parse(localStorage.getItem(PREFS)||'{}')}catch(e){return {}}}
 function savePreference(k,v){const p=readPrefs();p[k]=v;localStorage.setItem(PREFS,JSON.stringify(p))}
