@@ -1436,13 +1436,13 @@ async function actualiserVerrouGoogle() {
   console.log('Erreur Supabase :', error);
   verrou.style.display =
     (!error && data.session) ? 'none' : 'flex';
+  if (!error && data.session) verrou.remove();
 }
 actualiserVerrouGoogle();
 supabaseClient.auth.onAuthStateChange((_event, session) => {
   const verrou = document.getElementById('verrouGoogle');
   if (verrou) {
     verrou.style.display = session ? 'none' : 'flex';
-  }
 });
 </script>
 </body>
