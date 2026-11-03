@@ -1432,7 +1432,7 @@ async function actualiserVerrouGoogle() {
   const verrou = document.getElementById('verrouGoogle');
   if (!verrou) return;
   const { data, error } = await supabaseClient.auth.getSession();
-  console.log('Session Supabase :', data.session);
+  alert('Session détectée : ' + (!!data.session) + '\nErreur : ' + (error ? error.message : 'Aucune'));
   console.log('Erreur Supabase :', error);
   verrou.style.display =
     (!error && data.session) ? 'none' : 'flex';
