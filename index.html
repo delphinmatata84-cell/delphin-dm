@@ -1396,55 +1396,5 @@ supabaseClient.auth.onAuthStateChange(() => {
   verifierAccesGoogle();
 });
 </script>
-<div id="verrouGoogle" style="
-  position:fixed;
-  inset:0;
-  z-index:999999;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#050907;
-  color:white;
-  text-align:center;
-  font-family:Arial;
-">
-  <div style="
-    padding:30px;
-    border:1px solid #18b96b;
-    border-radius:20px;
-    background:#10251d;
-  ">
-    <h1 style="color:#36e58b;">Delphin DM</h1>
-    <p>Connectez-vous pour accéder à votre espace.</p>
-    <button onclick="connexionGoogle()" style="
-      padding:14px;
-      background:#18b96b;
-      color:white;
-      border:0;
-      border-radius:10px;
-    ">
-      🔐 Se connecter avec Google
-    </button>
-  </div>
-</div>
-<script>
-async function actualiserVerrouGoogle() {
-  const verrou = document.getElementById('verrouGoogle');
-  if (!verrou) return;
-  const { data, error } = await supabaseClient.auth.getSession();
-  alert('Session détectée : ' + (!!data.session) + '\nErreur : ' + (error ? error.message : 'Aucune'));
-  console.log('Erreur Supabase :', error);
-  verrou.style.display =
-    (!error && data.session) ? 'none' : 'flex';
-  if (!error && data.session) verrou.remove();
-}
-actualiserVerrouGoogle();
-supabaseClient.auth.onAuthStateChange((_event, session) => {
-  const verrou = document.getElementById('verrouGoogle');
-  if (verrou) {
-    verrou.style.display = session ? 'none' : 'flex';
-  }
-});
-</script>
 </body>
 </html>
