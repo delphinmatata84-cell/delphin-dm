@@ -1430,8 +1430,10 @@ supabaseClient.auth.onAuthStateChange(() => {
 <script>
 async function actualiserVerrouGoogle() {
   const verrou = document.getElementById('verrouGoogle');
-  const { data, error } = await supabaseClient.auth.getSession();
   if (!verrou) return;
+  const { data, error } = await supabaseClient.auth.getSession();
+  console.log('Session Supabase :', data.session);
+  console.log('Erreur Supabase :', error);
   verrou.style.display =
     (!error && data.session) ? 'none' : 'flex';
 }
