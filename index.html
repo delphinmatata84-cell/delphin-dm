@@ -1383,6 +1383,55 @@ function envoyerCreation() {
     </button>
   </div>
 </div>
+/* ===== DELPHIN DM : NOIR & VERT ===== */
+:root {
+  --bg: #050807;
+  --panel: rgba(13, 25, 19, 0.88);
+  --panel2: rgba(19, 43, 29, 0.82);
+  --text: #f1fff5;
+  --muted: #a9c5b2;
+  --border: rgba(57, 190, 105, 0.28);
+  --gold: #39e879;
+  --blue: #123d27;
+  --input: rgba(5, 15, 10, 0.9);
+}
+body {
+  background: linear-gradient(135deg, #020504, #092016, #030705) !important;
+  color: var(--text) !important;
+}
+header, section, .card, .panel, .modal,
+#settingsPanel, #messages {
+  background: rgba(12, 27, 19, 0.72) !important;
+  border: 1px solid var(--border) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 18px;
+}
+h1, h2, h3 {
+  color: #65f59a !important;
+}
+button {
+  background: linear-gradient(135deg, #087b3b, #19c765) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(100, 255, 160, 0.35) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 18px rgba(0, 180, 80, 0.16);
+}
+input, textarea, select {
+  background: var(--input) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+}
+input::placeholder, textarea::placeholder {
+  color: #91aa99 !important;
+}
+a {
+  color: #65f59a !important;
+}
+footer {
+  color: var(--muted) !important;
+}  
 <script>
 async function verifierAccesGoogle() {
   const { data } = await supabaseClient.auth.getSession();
