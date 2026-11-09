@@ -384,8 +384,15 @@ section.card.discussion-plein-ecran #messages {
 </style></head>
 <body>
 <header><div class="headerrow"><div><div class="logo">Delphin <span>DM</span> 🌍</div><p>Un espace pour échanger entre humains et intelligence artificielle.</p></div>
-<div class="topbuttons"><button class="ghost" onclick="toggleSettings()" id="settingsButton" aria-expanded="false">⚙️ Paramètres</button>
-<button class="ghost" onclick="toggleCreations()">🎨 Créations</button></div></div></header>
+<div class="topbuttons">
+  <button class="ghost" onclick="toggleGeneral()" id="generalButton">☰ GÉNÉRAL</button>
+  <div id="generalMenu" style="display:none;">
+    <button onclick="toggleSettings();toggleGeneral()">⚙️ Paramètres</button>
+    <button onclick="toggleCreations();toggleGeneral()">🎨 Créations</button>
+  </div>
+  <div id="profilGoogle"></div>
+</div>
+</div></div></header>
 <main>
 <section id="settingsPanel" class="card" aria-label="Paramètres">
 <h2>⚙️ Paramètres de Delphin DM</h2><p class="small">Personnalise ton expérience. Les préférences sont enregistrées sur cet appareil.</p>
