@@ -662,22 +662,45 @@ async function connexionGoogle(){
   }
 }
 async function afficherCompteGoogle() {
-  const zone = document.getElementById('compteGoogle');
+  const zone = document.getElementById('profilGoogle');
+  const compte = document.getElementById('compteGoogle');
   const { data, error } = await supabaseClient.auth.getUser();
+  zone.innerHTML = '';
+
   if (error || !data.user) {
-    zone.textContent = 'Aucun compte connecté.';
+    if (compte) compte.textContent = 'Aucun compte connecté.';
     return;
   }
-  zone.textContent = 'Connecté : ' + (data.user.email || 'Compte Google');
+  const user = data.user;
+  const nom = user.user_metadata.full_name || user.user_metadata.name || 'Mon profil';
+  const photo = user.user_metadata.avatar_url || user.user_metadata.picture;
+  const bouton = document.createElement('button');
+  bouton.type = 'button';
+  bouton.className = 'ghost';
+  if (photo) {
+    const image = document.createElement('img');
+    image.src = photo;
+    image.alt = 'Photo Google';
+    image.style.cssText = 'width:35px;height:35px;border-radius:50%;object-fit:cover;vertical-align:middle;';
+    bouton.appendChild(image);
+  }
+  const texte = document.createElement('span');
+  texte.textContent = ' ' + nom;
+  bouton.appendChild(texte);
+  bouton.onclick = () => {
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+  };
+  const menu = document.createElement('div');
+  menu.style.cssText = 'display:none;background:#102b3b;padding:12px;border-radius:10px;position:absolute;right:10px;z-index:100001;';
+  menu.textContent = user.email || '';
+  zone.appendChild(bouton);
+  zone.appendChild(menu);
+  if (compte) compte.textContent = 'Connecté : ' + (user.email || nom);
 }
 afficherCompteGoogle();
-supabaseClient.auth.onAuthStateChange((_event, session) => {
-  const zone = document.getElementById('compteGoogle');
-  if (session && session.user) {
-    zone.textContent = 'Connecté : ' + (session.user.email || 'Compte Google');
-  } else {
-    zone.textContent = 'Aucun compte connecté.';
-  }
+
+supabaseClient.auth.onAuthStateChange(() => {
+  afficherCompteGoogle();
 });
 async function sauvegarderEchange(question, reponse) {
   const { data: auth, error: authError } =
