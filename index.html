@@ -460,7 +460,7 @@ function readPrefs(){try{return JSON.parse(localStorage.getItem(PREFS)||'{}')}ca
 function savePreference(k,v){const p=readPrefs();p[k]=v;localStorage.setItem(PREFS,JSON.stringify(p))}
 function toggleGeneral(){
   const menu = document.getElementById('generalMenu');
-  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+  menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
 }
 function toggleSettings(){
   const panel = document.getElementById('settingsPanel');
