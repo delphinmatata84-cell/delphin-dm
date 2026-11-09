@@ -386,9 +386,11 @@ section.card.discussion-plein-ecran #messages {
 <header><div class="headerrow"><div><div class="logo">Delphin <span>DM</span> 🌍</div><p>Un espace pour échanger entre humains et intelligence artificielle.</p></div>
 <div class="topbuttons">
   <button class="ghost" onclick="toggleGeneral()" id="generalButton">☰ GÉNÉRAL</button>
-  <div id="generalMenu" style="display:none;">
-    <button onclick="toggleSettings();toggleGeneral()">⚙️ Paramètres</button>
-    <button onclick="toggleCreations();toggleGeneral()">🎨 Créations</button>
+  <div id="generalMenu" class="general-screen" style="display:none;">
+  <h2>☰ GÉNÉRAL</h2>
+  <button onclick="toggleSettings();toggleGeneral()">⚙️ Paramètres</button>
+  <button onclick="toggleCreations();toggleGeneral()">🎨 Créations</button>
+  <button onclick="toggleGeneral()">↩ Retour</button>
   </div>
   <div id="profilGoogle"></div>
 </div>
